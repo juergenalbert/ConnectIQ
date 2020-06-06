@@ -1,0 +1,4 @@
+<strings>
+    <string id="AppName">OverPassanger</string>
+    <string id="NoQueries">Your are offline or no Overpass queries at given address</string>
+</strings>

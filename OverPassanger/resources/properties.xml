@@ -1,0 +1,20 @@
+<resources>
+    <properties>
+        <property id="LogDebug" type="boolean">false</property>
+        <property id="QueriesURL" type="string">http://127.0.0.1:8080/queries.json</property>
+    </properties>
+
+    <strings>
+       <string id="LogDebug">Debug Logging</string>
+       <string id="QueriesURL">Query URL</string>
+    </strings>
+
+    <settings>
+        <setting propertyKey="@Properties.LogDebug" title="@Strings.LogDebug">
+            <settingConfig type="boolean" />
+        </setting>
+        <setting propertyKey="@Properties.QueriesURL" title="@Strings.QueriesURL">
+            <settingConfig type="alphaNumeric" />
+        </setting>
+    </settings>
+</resources>
