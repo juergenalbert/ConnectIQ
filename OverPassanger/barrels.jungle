@@ -1,10 +1,9 @@
 # Do not hand edit this file. To make changes right click
 # on the project and select "Configure Monkey Barrels".
 
-OverpassBarrel = [/Users/juergi/develop/CIQ/OverpassBarrel/monkey.jungle]
-base.OverpassBarrel.annotations = Test
+OverpassBarrel = [../OverpassBarrel/monkey.jungle]
 base.barrelPath = $(base.barrelPath);$(OverpassBarrel)
 
-LogBarrel = [/Users/juergi/develop/CIQ/LogBarrel/monkey.jungle]
+LogBarrel = [../LogBarrel/monkey.jungle]
 base.barrelPath = $(base.barrelPath);$(LogBarrel)
 
