@@ -1,9 +1,12 @@
 # Do not hand edit this file. To make changes right click
 # on the project and select "Configure Monkey Barrels".
 
-OverpassBarrel = [../OverpassBarrel/monkey.jungle]
+OverpassBarrel = [/Users/juergi/develop/CIQ/ConnectIQ/OverpassBarrel/monkey.jungle]
 base.barrelPath = $(base.barrelPath);$(OverpassBarrel)
 
-LogBarrel = [../LogBarrel/monkey.jungle]
+LogBarrel = [/Users/juergi/develop/CIQ/ConnectIQ/LogBarrel/monkey.jungle]
 base.barrelPath = $(base.barrelPath);$(LogBarrel)
+
+DialogBarrel = [/Users/juergi/develop/CIQ/ConnectIQ/DialogBarrel/monkey.jungle]
+base.barrelPath = $(base.barrelPath);$(DialogBarrel)
 

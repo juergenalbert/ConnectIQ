@@ -5,8 +5,7 @@ using Toybox.Lang;
 
 module OverpassBarrel {
 
-(:API)
-module OverpassAPI {
+//module OverpassAPI {
 
 	function getProxy(options) {
 		return new OverpassProxy(options);
@@ -78,5 +77,5 @@ module OverpassAPI {
 	    }
 	}
 
-}
+//}
 }

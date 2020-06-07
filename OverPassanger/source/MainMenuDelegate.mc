@@ -4,9 +4,8 @@ using Toybox.Communications;
 using Toybox.Position;
 using Toybox.Application.Storage;
 using Toybox.Background;
-using MessageDialog;
-using ProgressDialog;
-using OverpassBarrel.OverpassAPI as Overpass;
+using OverpassBarrel as Overpass;
+using DialogBarrel as Dialog;
 using OverPassanger;
 
 //(:background)
@@ -14,13 +13,17 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 	//hidden const FIVE_MINUTES = new Time.Duration(5 * 60);
     var searchActive = false;
     
-   	function logDebug(message) {
-   		OverPassanger.logDebug(:MainMenuDelegate, message);
-   	}
-
-   	function logError(message) {
-   		OverPassanger.logError(:MainMenuDelegate, message);
-   	}
+    function logDebug(message) {
+		if ($ has :LogBarrel) {
+			LogBarrel.logDebug(:MainMenuDelegate, message);
+		}
+    }
+    
+    function logError(message) {
+		if ($ has :LogBarrel) {
+			LogBarrel.logError(:MainMenuDelegate, message);
+		}
+    }
 
    	function logVariable(name, value) {
    		OverPassanger.logVariable(:MainMenuDelegate, name, value);
@@ -145,9 +148,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 	function queryOverPass() {
 		Overpass.getProxy({
 			:result => self.method(:queryOverPassResult),
-			:logDebug => new Toybox.Lang.Method(OverPassanger, :logDebug),
-			:logError => new Toybox.Lang.Method(OverPassanger, :logError),
-			:errorDialog => new Toybox.Lang.Method(MessageDialog, :show),
+			:errorDialog => new Toybox.Lang.Method(Dialog, :showError),
 		}).query();
 	}
 	
@@ -157,10 +158,17 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 	}
 
 	function queryList() {
-	   	var url = Application.getApp().getProperty("QueriesURL");                        
- 		ProgressDialog.show("searching...", method(:stopSearch));
-    	Communications.makeJsonRequest(url, null, null, self.method(:onQueriesResponse));
-		searchActive = true;
+	   	var url = Application.getApp().getProperty("QueriesURL");  
+	   	
+	   	var mySettings = System.getDeviceSettings();
+		var phoneConnected = mySettings.phoneConnected;   
+		if (phoneConnected) {                  
+	 		Dialog.showProgress("searching...", method(:stopSearch));
+	    	Communications.makeJsonRequest(url, null, null, self.method(:onQueriesResponse));
+			searchActive = true;
+		} else {
+			Dialog.showError(Rez.Strings.Offline);
+		}
 	}
 	
     function stopSearch() {
@@ -182,7 +190,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 				logError("queryList terminated with " + code);
 				var queries = Storage.getValue("queries");
 				if (queries == null) {
-					MessageDialog.show(Rez.Strings.NoQueries);	
+					Dialog.showError(Rez.Strings.NoQueries);	
 				} else {
 	        		pushQueryMenu(queries);
 				}
@@ -198,13 +206,13 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 	function messageTest() {
 		var options = {
 			:title => "Der Titel ist lang",
-			:text => "Lorem\nIn Connect IQ 3.1, these are no longer issues thanks to WatchUi.TextArea and relative coordinates. The WatchUi.TextArea is a super powered upgrade to WatchUi.Text. ",
+			:text => "Lorem abcdefghijklmnopqrstuvwxyz\nIn Connect IQ 3.1, these are no longer issues thanks to WatchUi.TextArea and relative coordinates. The WatchUi.TextArea is a super powered upgrade to WatchUi.Text. ",
 			:menu => [
 				{:text => "Verwerfen", :method => method(:dismiss)},
 				{:text => "Akzeptieren", :method => method(:accept)}
 			]
 		};
-		MessageDialog.show(options);
+		Dialog.showMessage(options);
 	}
 	
 	function dismiss() {

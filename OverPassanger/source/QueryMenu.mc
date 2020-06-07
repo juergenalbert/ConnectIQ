@@ -2,6 +2,7 @@ using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.Position;
 using Toybox.Application.Storage;
+using DialogBarrel as Dialog;
 
 function pushQueryMenu(elements) {
 	var menu = new WatchUi.Menu2({:title=>"Query"});
@@ -32,7 +33,7 @@ class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
 		subtitleTag = elements[index]["subtitleTag"];
  		var url = "http://www.overpass-api.de/api/interpreter?data=[out:json];" + query + "(48.14,11.64,48.16,11.66);out%20meta;";
   		
-  		ProgressDialog.show("searching...", method(:stopSearch));
+  		Dialog.showProgress("searching...", method(:stopSearch));
 
     	Communications.makeJsonRequest(url, null, null, self.method(:onResponse));
 		searchActive = true;
@@ -61,7 +62,7 @@ class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
 	        	
 				pushPOIMenu(elements, subtitleTag);
 			} else {
-				MessageDialog.show("code: " + code);
+				showError("code: " + code);
 			}
 		}
     }
