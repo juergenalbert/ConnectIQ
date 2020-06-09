@@ -1,16 +1,16 @@
 {
-	"version": 0.1,
-	"queries": [
-		{
-			"name": "restaurants",
-			"subtitle": "bla",
-			"subtitleTag": "cuisine",
-			"query": "node[amenity=restaurant]"
-		},
-		{
-			"name": "shelters",
-			"subtitle": "blubber",
-			"query": "node[amenity=shelter]"
-		}
-	]
+  "version": "0.1",
+  "queries": [
+    {
+      "name": "restaurants",
+      "subtitle": "bla",
+      "subtitleTag": "cuisine",
+      "query": "node[amenity=restaurant]"
+    },
+    {
+      "name": "shelters",
+      "subtitle": "blubber",
+      "query": "node[amenity=shelter]"
+    }
+  ]
 }
