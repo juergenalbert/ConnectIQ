@@ -2,7 +2,9 @@ using Toybox.WatchUi;
 
 module DialogBarrel {
 	function showProgress(message, callback) {
-        WatchUi.pushView(new WatchUi.ProgressBar(message, null), new ProgressDelegate(callback), WatchUi.SLIDE_DOWN);
+		if (WatchUi has :ProgressBar) {
+        	WatchUi.pushView(new WatchUi.ProgressBar(message, null), new ProgressDelegate(callback), WatchUi.SLIDE_DOWN);
+        }
 	}
 
 	class ProgressDelegate extends WatchUi.BehaviorDelegate

@@ -1,11 +1,11 @@
 <resources>
 	<drawables>
 		<drawable-list id="header">
-			<shape type="rectangle" x="0" y="0" width="100%" height="20%"
+			<shape type="rectangle" x="0" y="0" width="100%" height="11%"
 				color="Graphics.COLOR_BLACK" />
 		</drawable-list>
 		<drawable-list id="footer">
-			<shape type="rectangle" x="0" y="80%" width="100%" height="20%"
+			<shape type="rectangle" x="0" y="89%" width="100%" height="11%"
 				color="Graphics.COLOR_BLACK" />
 		</drawable-list>
 	</drawables>
@@ -14,22 +14,22 @@
 			<param name="locX">0</param>
 			<param name="locY">0</param>
 			<param name="width">"100%"</param>
-			<param name="height">"20%"</param>
+			<param name="height">"10%"</param>
 		</drawable>
 		<drawable id="footer" />
-		<label id="headerText" x="center" y="8%" text="headerText"
+		<label id="headerText" x="center" y="2%" text="headerText"
 			color="Graphics.COLOR_WHITE"
 			justification="Graphics.TEXT_JUSTIFY_CENTER"
-			font="Graphics.FONT_TINY" />
+			font="Graphics.FONT_MEDIUM" />
 		<drawable id="bodyText" class="TextArea">
-			<param name="locX">"10%"</param>
-			<param name="locY">"20%"</param>
-			<param name="width">"80%"</param>
-			<param name="height">"60%"</param>
+			<param name="locX">"5%"</param>
+			<param name="locY">"11%"</param>
+			<param name="width">"90%"</param>
+			<param name="height">"78%"</param>
 		</drawable>
-		<label id="footerText" x="center" y="82%" text="  Akzeptieren"
+		<label id="footerText" x="center" y="92%" text="  Akzeptieren"
 			color="Graphics.COLOR_WHITE"
 			justification="Graphics.TEXT_JUSTIFY_CENTER" 
-			font="Graphics.FONT_TINY"/>
+			font="Graphics.FONT_MEDIUM"/>
 	</layout>
 </resources>

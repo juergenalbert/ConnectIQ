@@ -20,7 +20,7 @@ module LogBarrel {
 	}
 	
 	function logVariable(tag, name, value) {
-		var doLog = Application.getApp().getProperty("LogDebug");
+		var doLog = Toybox.Application.getApp().getProperty("LogDebug");
 		if (doLog == true) {
 			Logger.Debug.logVariable(tag, name, value);
 		}

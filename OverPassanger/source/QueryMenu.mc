@@ -9,7 +9,6 @@ function pushQueryMenu(elements) {
 
 	for (var i = 0; i < elements.size(); i++) {
 		var element = elements[i];
-		OverPassanger.logVariable("MainMenuDelegate", "element", element);
         menu.addItem(new WatchUi.MenuItem(element["name"], element["subtitle"], i, null));
 	}
 
@@ -28,7 +27,6 @@ class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
 
     function onSelect(item) {
     	var index = item.getId();
-		OverPassanger.logDebug("QueryMenuDelegate", "onSelect(" + index + ")");
 		var query = elements[index]["query"];
 		subtitleTag = elements[index]["subtitleTag"];
  		var url = "http://www.overpass-api.de/api/interpreter?data=[out:json];" + query + "(48.14,11.64,48.16,11.66);out%20meta;";
@@ -44,15 +42,12 @@ class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 
     function stopSearch() {
-		OverPassanger.logDebug("QueryMenuDelegate", "stopSearch");
+		logDebug("QueryMenuDelegate", "stopSearch");
 		searchActive = false;
 		Communications.cancelAllRequests();
     }
     
     function onResponse(code, data) {
-		OverPassanger.logDebug("QueryMenuDelegate", "onResponse(" + code + ")");
-
-		OverPassanger.logVariable("QueryMenuDelegate", "searchActive", searchActive);
 		if (searchActive) {
 	        WatchUi.popView(WatchUi.SLIDE_DOWN);
 	

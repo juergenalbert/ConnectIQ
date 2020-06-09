@@ -2,13 +2,30 @@ using Toybox.WatchUi;
 using Toybox.Graphics;
 using Toybox.Position;
 
+/*
+function logDebug(message) {
+	if ($ has :LogBarrel) {
+		LogBarrel.logDebug(:POIMenu, message);
+	}
+}
+    
+function logError(message) {
+	if ($ has :LogBarrel) {
+		LogBarrel.logError(:POIMenu, message);
+	}
+}
+*/
+
+function logVariable(name, value) {
+   	logVariable(name, value);
+}
+
 function pushPOIMenu(elements, subtitleTag) {
 	//var menu = new WatchUi.Menu2({:title=>"POIs"});
 	var menu = new WrapTopMenu(80,Graphics.COLOR_BLACK,{});
 	
 	for (var i = 0; i < elements.size(); i++) {
 		var element = elements[i];
-		OverPassanger.logVariable("QueriesMenuDelegate", "element", element);
 		var tags = element["tags"];
 		var subTitle = null;
 		if (subtitleTag != null) {
@@ -34,9 +51,7 @@ class POIMenuDelegate extends WatchUi.Menu2InputDelegate {
 
     function onSelect(item) {
     	var index = item.getId();
-		OverPassanger.logDebug("POIMenuDelegate", "onSelect(" + index + ")");
 		var poi = elements[index];
-		OverPassanger.logVariable("POIMenuDelegate", "poi", poi);
 
 		pushTagMenu(poi["tags"]);
     }
@@ -46,23 +61,23 @@ class POIMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 
     function onDone() {
-		OverPassanger.logDebug("POIMenuDelegate", "onDone");
+		logDebug("onDone");
     }
 
     function onFooter() {
-		OverPassanger.logDebug("POIMenuDelegate", "onFooter");
+		logDebug("onFooter");
     }
 
     function onTitle() {
-		OverPassanger.logDebug("POIMenuDelegate", "onTitle");
+		logDebug("onTitle");
     }
 
     function onWrap(key) {
-		OverPassanger.logDebug("POIMenuDelegate", "onWrap key=" + key.toString());
+		logDebug("onWrap key=" + key.toString());
     }
 
     function onMenu() {
-		OverPassanger.logDebug("POIMenuDelegate", "onMenu");
+		logDebug("onMenu");
     }
 }
 
@@ -187,14 +202,14 @@ class WrapTopCustomDelegate extends WatchUi.Menu2InputDelegate {
 
     function onWrap(key) {
         if(key == WatchUi.KEY_DOWN) {
-            OverPassanger.logDebug("POIMenuDelegate", "onWrap");
+            logDebug("onWrap");
             //pushWrapCustomBottom();
         }
         return false;
     }
 
     function onFooter() {
-        OverPassanger.logDebug("POIMenuDelegate", "onFooter");
+        logDebug("onFooter");
         //pushWrapCustomBottom();
     }
 }

@@ -6,11 +6,8 @@ using Toybox.Application.Storage;
 using Toybox.Background;
 using OverpassBarrel as Overpass;
 using DialogBarrel as Dialog;
-using OverPassanger;
 
-//(:background)
-class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
-	//hidden const FIVE_MINUTES = new Time.Duration(5 * 60);
+class MainMenuDelegate extends WatchUi.MenuInputDelegate {
     var searchActive = false;
     
     function logDebug(message) {
@@ -26,20 +23,25 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 
    	function logVariable(name, value) {
-   		OverPassanger.logVariable(:MainMenuDelegate, name, value);
+		if ($ has :LogBarrel) {
+   			LogBarrel.logVariable(:MainMenuDelegate, name, value);
+   		}
    	}
 
-    function onTemporalEvent() {
-		logDebug("onTemporalEvent");
-	}
-
     function initialize() {
-        Menu2InputDelegate.initialize();
+        MenuInputDelegate.initialize();
 	}
 
+	function onMenuItem(item) {
+		logVariable("item", item);
+    	self.method(item).invoke();
+    }
+
+	/*
     function onSelect(item) {
     	self.method(item.getId()).invoke();
     }
+    */
 
 	function createAppWaypoints() {
 		logDebug("createWaypoints");
@@ -164,7 +166,14 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 		var phoneConnected = mySettings.phoneConnected;   
 		if (phoneConnected) {                  
 	 		Dialog.showProgress("searching...", method(:stopSearch));
-	    	Communications.makeJsonRequest(url, null, null, self.method(:onQueriesResponse));
+	 		var options = {                                             
+                :method => Communications.HTTP_REQUEST_METHOD_GET,     
+                :headers => {                                         
+                   "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON
+                },
+                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
+            };
+	    	Communications.makeJsonRequest(url, null, options, self.method(:onQueriesResponse));
 			searchActive = true;
 		} else {
 			Dialog.showError(Rez.Strings.Offline);
@@ -206,7 +215,7 @@ class MainMenuDelegate extends WatchUi.Menu2InputDelegate {
 	function messageTest() {
 		var options = {
 			:title => "Der Titel ist lang",
-			:text => "Lorem abcdefghijklmnopqrstuvwxyz\nIn Connect IQ 3.1, these are no longer issues thanks to WatchUi.TextArea and relative coordinates. The WatchUi.TextArea is a super powered upgrade to WatchUi.Text. ",
+			:text => "Lorem abcdefghijklmnopqrstuvwxyz\nIn Connect IQ 3.1, these are no longer issues thanks to WatchUi.TextArea and relative coordinates. The WatchUi.TextArea is a super powered upgrade to WatchUi.Text.\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
 			:menu => [
 				{:text => "Verwerfen", :method => method(:dismiss)},
 				{:text => "Akzeptieren", :method => method(:accept)}

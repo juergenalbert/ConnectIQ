@@ -1,8 +1,8 @@
-<menu2 id="MainMenu" title="@Strings.AppName">
+<menu id="MainMenu" title="@Strings.AppName">
 	<menu-item id="messageTest" label="messageTest"></menu-item>
 	<menu-item id="queryList" label="queryList"></menu-item>
 	<menu-item id="readData" label="readData"></menu-item>
-	<menu-item id="queryOverPass" label="queryOverPass" subLabel="With Sublabel"></menu-item>
+	<menu-item id="queryOverPass" label="queryOverPass"></menu-item>
 	<menu-item id="createAppWaypoints" label="createAppWaypoints"></menu-item>
 	<menu-item id="createIntent" label="createIntent"></menu-item>
 	<menu-item id="createWaypoints" label="createWaypoints"></menu-item>
@@ -11,4 +11,4 @@
 	<menu-item id="deleteWaypoints" label="deleteWaypoints"></menu-item>
 	<menu-item id="createProperites" label="createProperites"></menu-item>
 	<menu-item id="getProperites" label="getProperites"></menu-item>
-</menu2>
+</menu>

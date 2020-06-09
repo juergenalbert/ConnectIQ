@@ -20,6 +20,12 @@ module DialogBarrel {
 		}
     }
     
+    function logVariable(name, value) {
+		if ($ has :LogBarrel) {
+			LogBarrel.logVariable(:DialogBarrel, name, value);
+		}
+    }
+    
 	function showError(error) {
 		var view = new MessageDialogView(toText(Rez.Strings.Error), Gfx.COLOR_RED, toText(error), [{:text => toText(Rez.Strings.OK), :method => new Toybox.Lang.Method(DialogBarrel, :close)}]);
 		WatchUi.pushView(view, new MessageDialogDelegate(view), WatchUi.SLIDE_DOWN);
@@ -35,7 +41,7 @@ module DialogBarrel {
 		if (message instanceof Lang.String) {
 			return message;
 		} else if (message instanceof Lang.Number) {
-			return Application.loadResource(message);
+			return WatchUi.loadResource(message);
 		} else {
 			return message.toString();
 		}
@@ -75,7 +81,7 @@ module DialogBarrel {
 	    hidden var header;
 	    hidden var footer;
 	    hidden var headerText;
-	    hidden var bodyText;
+	    var bodyText;
 	    hidden var footerText;
 	    	
 	    function initialize(title, titleColor, text, menu) {
@@ -98,11 +104,16 @@ module DialogBarrel {
 	    	headerText.setText(title);
 	    	bodyText.setText(text);
 	    	
+	    	var f = "";
 	    	if (menu.size() == 1) {
-	    		footerText.setText("  " + menu[0][:text]);
+				f = menu[0][:text];
 	    	} else if (menu.size() > 1) {
-	    		footerText.setText("  ...");
+	    		f = "...";
 	    	}
+    		if (!System.getDeviceSettings().isTouchScreen) {
+    			f = "  " + f;
+    		} 
+	    	footerText.setText(f);
 	    }
 	    
 		function onUpdate(dc) {
@@ -122,7 +133,9 @@ module DialogBarrel {
 	    	if (bodyText.atEnd()) {
 	    		footer.draw(dc);
 	    		footerText.draw(dc);
-	    		drawDownArrow(dc, (dc.getWidth() - footerText.width) / 2, footerText.locY + 10, Gfx.COLOR_WHITE);
+	    		if (!System.getDeviceSettings().isTouchScreen) {
+		    		drawDownArrow(dc, (dc.getWidth() - footerText.width) / 2, footerText.locY + 10, Gfx.COLOR_WHITE);
+		    	}
 	    	} else {
 				drawDownArrow(dc, dc.getWidth() / 2, dc.getHeight() - ARROW_SIZE - ARROW_PADDING, Gfx.COLOR_BLACK);
 			}	
@@ -139,14 +152,7 @@ module DialogBarrel {
 	    		if (menu.size() == 1) {
 	    			menu[0][:method].invoke();
 	    		} else if (menu.size() > 1 ) {
-					var menu2 = new WatchUi.Menu2({:title => new DrawableMenuTitle(title)});
-				
-					for (var i = 0; i < menu.size(); i++) {
-						var element = menu[i];
-				        menu2.addItem(new WatchUi.MenuItem(menu[i][:text], null, i, null));
-					}
-				
-				    WatchUi.pushView(menu2, new MessageMenuDelegate(menu), WatchUi.SLIDE_UP);
+	    			openMenu();
 	    		}
 	    	} else {
 	    		bodyText.scrollDown();
@@ -156,34 +162,24 @@ module DialogBarrel {
 	    function scrollUp() {
 	    	bodyText.scrollUp();
 	    }
-	}
-	
-	class MessageMenuDelegate extends WatchUi.Menu2InputDelegate {
-		hidden var menu;
-	
-	    function initialize(menu) {
-	    	self.menu = menu;
-	        Menu2InputDelegate.initialize();
-	    }
 	    
-	    function onSelect(item) {
-	    	var index = item.getId();
-	    	WatchUi.popView(WatchUi.SLIDE_DOWN);
-	    	menu[index][:method].invoke();
-	    }
-	    
-	    function onWrap(key) {
-	        logDebug("onWrap");
-	        if(key == WatchUi.KEY_UP) {
-	            WatchUi.popView(WatchUi.SLIDE_DOWN);
-	        }
-	    }
-	    
-	    function onTitle(key) {
-	        logDebug("onTitle");
+	    function openMenu() {
+  			var menuView;
+			if (WatchUi has :Menu2) {
+				menuView = new WatchUi.Menu2({:title => new DrawableMenuTitle(title)});
+				for (var i = 0; i < menu.size(); i++) {
+		        	menuView.addItem(new WatchUi.MenuItem(menu[i][:text], null, i, null));
+				}
+				WatchUi.pushView(menuView, new MessageMenu2Delegate(menu), WatchUi.SLIDE_UP);
+			} else {
+				menuView = new WatchUi.Menu();
+				for (var i = 0; i < menu.size(); i++) {
+			        menuView.addItem(menu[i][:text], i);
+				}
+				WatchUi.pushView(menuView, new MessageMenuDelegate(menu), WatchUi.SLIDE_UP);
+			}
 	    }
 	}
-	
 	
 	class MessageDialogDelegate extends WatchUi.BehaviorDelegate {
 	    var view;
@@ -195,10 +191,12 @@ module DialogBarrel {
 	
 	    function onMenu() {
 			logDebug("onMenu");
+			view.openMenu();
 	    }
 	
 	    function onSelect() {
 			logDebug("onSelect");
+			return false;
 	    }
 	
 	    function onBack() {
@@ -221,6 +219,63 @@ module DialogBarrel {
 	    
 	    function onResponse(value) {
 			logDebug("onResponse");
+	    }
+	    
+	    function onTap(clickEvent) {
+			logDebug("onTap");
+	        var ypos = clickEvent.getCoordinates()[1];
+	        if (ypos < view.bodyText.locY) {
+				view.scrollUp();
+	        } else if (ypos > view.bodyText.locY + view.bodyText.height) {
+				view.scrollDown();
+	        }    
+	        return true;
+    	}
+    	
+    	function onSwipe(swipeEvent) {
+			logDebug("onSwipe");
+			var dir = swipeEvent.getDirection();
+			if (dir == WatchUi.SWIPE_DOWN) {
+				view.scrollUp();
+			} else if (dir == WatchUi.SWIPE_UP) {
+				view.scrollDown();
+			} 
+	        return false;
+    	}
+	}
+	
+	class MessageMenuDelegate extends WatchUi.MenuInputDelegate {
+		hidden var menu;
+	
+	    function initialize(menu) {
+	    	self.menu = menu;
+	        MenuInputDelegate.initialize();
+	    }
+	    
+	    function onMenuItem(item) {
+	    	menu[item][:method].invoke();
+	    }
+	}
+	
+	class MessageMenu2Delegate extends WatchUi.Menu2InputDelegate {
+		hidden var menu;
+	
+	    function initialize(menu) {
+	    	self.menu = menu;
+	        Menu2InputDelegate.initialize();
+	    }
+	    
+	    function onSelect(item) {
+	    	var index = item.getId();
+	    	WatchUi.popView(WatchUi.SLIDE_DOWN);
+	    	menu[index][:method].invoke();
+	    }
+	    
+	    function onWrap(key) {
+	        logDebug("onWrap");
+	        if(key == WatchUi.KEY_UP) {
+	            WatchUi.popView(WatchUi.SLIDE_DOWN);
+	        }
 	    }
 	}
 	
@@ -293,7 +348,7 @@ module DialogBarrel {
 		var text;
 		var dcWidth = -1;
 		var dcHeight = -1;
-		var font = Gfx.FONT_SMALL;
+		var font = Gfx.FONT_MEDIUM;
 		var lines = [];
 		var lineHeight;
 		var scrollPos = 0;
@@ -301,6 +356,24 @@ module DialogBarrel {
 		
 		function initialize(options) {
 			Toybox.WatchUi.Drawable.initialize(options);
+			if (options.hasKey(:font)) {
+				font = options[:font];
+				/*
+				if (fontname.equals("Graphics.FONT_XTINY")) {
+					font = Graphics.FONT_XTINY;
+				} else if (fontname.equals("Graphics.FONT_TINY")) {
+					font = Graphics.FONT_TINY;
+				} else if (fontname.equals("Graphics.FONT_SMALL")) {
+					font = Graphics.FONT_SMALL;
+				} else if (fontname.equals("Graphics.FONT_MEDIUM")) {
+					font = Graphics.FONT_MEDIUM;
+				} else if (fontname.equals("Graphics.FONT_LARGE")) {
+					font = Graphics.FONT_LARGE;
+				} 
+				logVariable("fontname", fontname);
+				logVariable("font", font);
+				*/
+			}
 		}
 		
 		function draw(dc) {

@@ -1,5 +1,5 @@
 using Toybox.Application;
-using Toybox.WatchUi;
+using Toybox.WatchUi as Ui;
 using LogBarrel.Logger as Logger;
 
 class OverPassangerApp extends Application.AppBase {
@@ -15,42 +15,58 @@ class OverPassangerApp extends Application.AppBase {
     }
 
     function getInitialView() {
-    	return [ new Rez.Menus.MainMenu(), new MainMenuDelegate() ];
+    	var menu = new Rez.Menus.MainMenu();
+    	var delegate = new MainMenuDelegate();
+    	//return [ menu, delegate ];
+    	return [ new DummyView(menu, delegate), new Ui.BehaviorDelegate() ];
     }
-}
 
-module OverPassanger {
-	function logDebug(tag, message) {
-		var doLog = Application.getApp().getProperty("LogDebug");
-		if (doLog == true) {
-			out(Logger.Debug, tag, message);
-		}
-	}
-	
-	function logError(tag, message) {
-		out(Logger.Error, tag, message);
-	}
-	
-	function logVariable(tag, name, value) {
-		var doLog = Application.getApp().getProperty("LogDebug");
-		if (doLog == true) {
-			Logger.Debug.logVariable(tag, name, value);
-		}
-	}
-	
-	function out(logger, tag, object) {
-		var tagname = tag;
-		if (tagname instanceof Toybox.Lang.Symbol) {
-			tagname = tagname.toString();
+	class DummyView extends Ui.View {
+		hidden var menu;
+		hidden var delegate;
+		hidden var firstTime = true;
+		
+		function initialize(menu, delegate) {
+			self.menu = menu;
+			self.delegate = delegate;
+			View.initialize();
 		}
 	
-		if (object instanceof Toybox.Lang.String) {
-			logger.logMessage(tagname, object);
-		} else if (object instanceof Toybox.Lang.Symbol) {
-			logger.logMessage(tagname, object.toString());
-		} else if (object instanceof Toybox.Lang.Exception) {
-			logger.logException(tagname, object);
+	    function onLayout(dc) {
+	    	logDebug("onLayout");
+			View.onLayout(dc);
+	    }
+	    // onShow() is called when this View is brought to the foreground
+	    function onShow() {
+	    	logDebug("onShow");
+	    	if (firstTime) {
+	    		firstTime = false;
+            	new Timer.Timer().start(method(:startupTimerCallback), 100, false);
+			} else {
+				Ui.popView(Ui.SLIDE_IMMEDIATE);			
+			}
+	    }
+	
+	    function startupTimerCallback() {
+			Ui.pushView(menu, delegate, Ui.SLIDE_IMMEDIATE);
+	    }
+	    
+	    // onUpdate() is called periodically to update the View
+	    function onUpdate(dc) {
+	    	logDebug("onUpdate");
+			View.onUpdate(dc);
+	    }
+	
+	    // onHide() is called when this View is removed from the screen
+	    function onHide() {
+	    	logDebug("onHide");
+			//Ui.popView(Ui.SLIDE_IMMEDIATE);
+	    }
+
+		function logDebug(message) {
+			if ($ has :LogBarrel) {
+				Logger.logDebug(:OverPassangerApp, message);
+			}
 		}
 	}
 }
-
