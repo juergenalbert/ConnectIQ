@@ -169,6 +169,7 @@ module DialogBarrel {
         
         function openMenu() {
             var menuView;
+            /*
             if (WatchUi has :Menu2) {
                 menuView = new WatchUi.Menu2({:title => new DrawableMenuTitle(title)});
                 for (var i = 0; i < menu.size(); i++) {
@@ -182,6 +183,10 @@ module DialogBarrel {
                 }
                 WatchUi.pushView(menuView, new MessageMenuDelegate(menu), WatchUi.SLIDE_UP);
             }
+            */
+            menuView = new MenuView({:title => title});
+            var menuViewDelegate = new MenuViewDelegate(menuView); 
+            WatchUi.pushView(menuView, menuViewDelegate, WatchUi.SLIDE_UP);
         }
     }
     
