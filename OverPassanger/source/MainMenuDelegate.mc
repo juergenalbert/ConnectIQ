@@ -37,11 +37,15 @@ class MainMenuDelegate extends WatchUi.MenuInputDelegate {
     	self.method(item).invoke();
     }
 
-	/*
+	// for menu2
     function onSelect(item) {
     	self.method(item.getId()).invoke();
     }
-    */
+
+    // for menu2
+    function onWrap(key) {
+        logDebug("onWrap");
+    }
 
 	function createAppWaypoints() {
 		logDebug("createWaypoints");

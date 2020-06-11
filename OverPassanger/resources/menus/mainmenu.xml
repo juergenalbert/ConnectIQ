@@ -1,3 +1,4 @@
+<resources>
 <menu id="MainMenu" title="@Strings.AppName">
 	<menu-item id="messageTest" label="messageTest"></menu-item>
 	<menu-item id="queryList" label="queryList"></menu-item>
@@ -12,3 +13,4 @@
 	<menu-item id="createProperites" label="createProperites"></menu-item>
 	<menu-item id="getProperites" label="getProperites"></menu-item>
 </menu>
+</resources>
