@@ -205,7 +205,9 @@ module DialogBarrel {
     
         function onSelect() {
             logDebug("onSelect");
-            view.zoom();
+            if (!System.getDeviceSettings().isTouchScreen) {
+            	view.zoom();
+            }
             return false;
         }
     
@@ -233,12 +235,16 @@ module DialogBarrel {
         
         function onTap(clickEvent) {
             logDebug("onTap");
-            var ypos = clickEvent.getCoordinates()[1];
-            if (ypos < view.bodyText.locY) {
-                view.scrollUp();
-            } else if (ypos > view.bodyText.locY + view.bodyText.height) {
-                view.scrollDown();
-            }    
+            if (System.getDeviceSettings().isTouchScreen) {
+	            var ypos = clickEvent.getCoordinates()[1];
+	            if (ypos < view.bodyText.locY) {
+	                view.scrollUp();
+	            } else if (ypos > view.bodyText.locY + view.bodyText.height) {
+	                view.scrollDown();
+	            } else {
+	            	view.zoom();
+	            }  
+	        }  
             return true;
         }
         
