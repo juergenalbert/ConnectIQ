@@ -1,7 +1,7 @@
 <resources>
     <properties>
         <property id="LogDebug" type="boolean">false</property>
-        <property id="QueriesURL" type="string">https://github.com/juergenalbert/ConnectIQ/blob/master/OverPassanger/assets/queries.json</property>
+        <property id="QueriesURL" type="string">https://raw.githubusercontent.com/juergenalbert/ConnectIQ/master/OverPassanger/assets/queries.json</property>
     </properties>
 
     <strings>
