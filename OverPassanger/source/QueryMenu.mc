@@ -1,21 +1,21 @@
-using Toybox.WatchUi;
-using Toybox.Graphics;
+using Toybox.WatchUi as Ui;
+using Toybox.Graphics as Gfx;
 using Toybox.Position;
 using Toybox.Application.Storage;
 using DialogBarrel as Dialog;
 
 function pushQueryMenu(elements) {
-	var menu = new WatchUi.Menu2({:title=>"Query"});
+	var menu = new Ui.Menu2({:title=>"Query"});
 
 	for (var i = 0; i < elements.size(); i++) {
 		var element = elements[i];
-        menu.addItem(new WatchUi.MenuItem(element["name"], element["subtitle"], i, null));
+        menu.addItem(new Ui.MenuItem(element["name"], element["subtitle"], i, null));
 	}
 
-    WatchUi.pushView(menu, new QueryMenuDelegate(elements), WatchUi.SLIDE_UP);
+    Ui.pushView(menu, new QueryMenuDelegate(elements), Ui.SLIDE_UP);
 }
 
-class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
+class QueryMenuDelegate extends Ui.Menu2InputDelegate {
 	hidden var elements;
 	hidden var searchActive = false;
 	hidden var subtitleTag;
@@ -30,7 +30,7 @@ class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
 		var query = elements[index]["query"];
 		subtitleTag = elements[index]["subtitleTag"];
  		var url = "http://www.overpass-api.de/api/interpreter?data=[out:json];" + query + "(48.14,11.64,48.16,11.66);out%20meta;";
-  		
+
   		Dialog.showProgress("searching...", method(:stopSearch));
 
     	Communications.makeJsonRequest(url, null, null, self.method(:onResponse));
@@ -38,7 +38,7 @@ class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 
     function onBack() {
-        WatchUi.popView(WatchUi.SLIDE_DOWN);
+        Ui.popView(Ui.SLIDE_DOWN);
     }
 
     function stopSearch() {
@@ -46,15 +46,15 @@ class QueryMenuDelegate extends WatchUi.Menu2InputDelegate {
 		searchActive = false;
 		Communications.cancelAllRequests();
     }
-    
+
     function onResponse(code, data) {
 		if (searchActive) {
-	        WatchUi.popView(WatchUi.SLIDE_DOWN);
-	
+	        Ui.popView(Ui.SLIDE_DOWN);
+
 	        if (code == 200) {
 	        	var elements = data["elements"];
 	        	Storage.setValue("search_result", elements);
-	        	
+
 				pushPOIMenu(elements, subtitleTag);
 			} else {
 				showError("code: " + code);

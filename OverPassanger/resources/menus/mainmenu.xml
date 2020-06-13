@@ -1,5 +1,6 @@
 <resources>
 <menu id="MainMenu" title="@Strings.AppName">
+	<menu-item id="listViewTest" label="listViewTest"></menu-item>
 	<menu-item id="messageTest" label="messageTest"></menu-item>
 	<menu-item id="queryList" label="queryList"></menu-item>
 	<menu-item id="readData" label="readData"></menu-item>

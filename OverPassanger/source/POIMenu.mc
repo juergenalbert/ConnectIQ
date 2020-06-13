@@ -1,5 +1,5 @@
-using Toybox.WatchUi;
-using Toybox.Graphics;
+using Toybox.WatchUi as Ui;
+using Toybox.Graphics as Gfx;
 using Toybox.Position;
 
 /*
@@ -8,7 +8,7 @@ function logDebug(message) {
 		LogBarrel.logDebug(:POIMenu, message);
 	}
 }
-    
+
 function logError(message) {
 	if ($ has :LogBarrel) {
 		LogBarrel.logError(:POIMenu, message);
@@ -21,9 +21,9 @@ function logVariable(name, value) {
 }
 
 function pushPOIMenu(elements, subtitleTag) {
-	//var menu = new WatchUi.Menu2({:title=>"POIs"});
+	//var menu = new Ui.Menu2({:title=>"POIs"});
 	var menu = new WrapTopMenu(80,Graphics.COLOR_BLACK,{});
-	
+
 	for (var i = 0; i < elements.size(); i++) {
 		var element = elements[i];
 		var tags = element["tags"];
@@ -31,17 +31,17 @@ function pushPOIMenu(elements, subtitleTag) {
 		if (subtitleTag != null) {
 			subTitle = tags[subtitleTag];
 		}
-        menu.addItem(new WatchUi.MenuItem(tags["name"], subTitle, i, null));
+        menu.addItem(new Ui.MenuItem(tags["name"], subTitle, i, null));
     	//menu.addItem(new CustomWrapItem(i, tags["name"], Graphics.COLOR_WHITE));
 	}
     menu.addItem(new CustomWrapItem(:iii, "iii", Graphics.COLOR_WHITE));
     var drawable1 = new CustomIcon();
-    //menu.addItem(new WatchUi.IconMenuItem("Icon 1", drawable1.getString(), "left", drawable1, {:alignment=>WatchUi.MenuItem.MENU_ITEM_LABEL_ALIGN_LEFT}));
+    //menu.addItem(new Ui.IconMenuItem("Icon 1", drawable1.getString(), "left", drawable1, {:alignment=>Ui.MenuItem.MENU_ITEM_LABEL_ALIGN_LEFT}));
     menu.addItem(new CustomWrapItem("yyy", "xxx", Graphics.COLOR_WHITE));
-    WatchUi.pushView(menu, new POIMenuDelegate(elements), WatchUi.SLIDE_UP);
+    Ui.pushView(menu, new POIMenuDelegate(elements), Ui.SLIDE_UP);
 }
 
-class POIMenuDelegate extends WatchUi.Menu2InputDelegate {
+class POIMenuDelegate extends Ui.Menu2InputDelegate {
 	hidden var elements;
 
     function initialize(el) {
@@ -57,7 +57,7 @@ class POIMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 
     function onBack() {
-        WatchUi.popView(WatchUi.SLIDE_DOWN);
+        Ui.popView(Ui.SLIDE_DOWN);
     }
 
     function onDone() {
@@ -81,7 +81,7 @@ class POIMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 }
 
-class CustomWrapItem extends WatchUi.CustomMenuItem {
+class CustomWrapItem extends Ui.CustomMenuItem {
     var mLabel;
     var mTextColor;
 
@@ -115,7 +115,7 @@ class CustomWrapItem extends WatchUi.CustomMenuItem {
 
 
 
-class WrapTopMenu extends WatchUi.CustomMenu {
+class WrapTopMenu extends Ui.CustomMenu {
     function initialize(itemHeight, backgroundColor, options) {
         CustomMenu.initialize(itemHeight, backgroundColor, options);
     }
@@ -128,8 +128,8 @@ class WrapTopMenu extends WatchUi.CustomMenu {
     */
 
     function drawTitle(dc) {
-        if( Toybox.WatchUi.CustomMenu has :isTitleSelected ) {
-            if( isTitleSelected() ) {
+        if (Ui.CustomMenu has :isTitleSelected) {
+            if(isTitleSelected()) {
                 dc.setColor(Graphics.COLOR_BLUE, Graphics.COLOR_BLUE);
                 dc.clear();
             }
@@ -146,7 +146,7 @@ class WrapTopMenu extends WatchUi.CustomMenu {
         var height = dc.getHeight();
         var centerX = dc.getWidth() / 2;
         var bkColor = Graphics.COLOR_WHITE;
-        if( Toybox.WatchUi.CustomMenu has :isFooterSelected ) {
+        if (Ui.CustomMenu has :isFooterSelected) {
             bkColor = isFooterSelected() ? Graphics.COLOR_BLUE : Graphics.COLOR_WHITE;
         }
         dc.setColor(bkColor, bkColor);
@@ -162,7 +162,7 @@ class WrapTopMenu extends WatchUi.CustomMenu {
     }
 }
 
-class WrapBottomMenu extends WatchUi.CustomMenu {
+class WrapBottomMenu extends Ui.CustomMenu {
     function initialize(itemHeight, backgroundColor, options) {
         CustomMenu.initialize(itemHeight, backgroundColor, options);
     }
@@ -170,7 +170,7 @@ class WrapBottomMenu extends WatchUi.CustomMenu {
     function drawTitle(dc) {
         var centerX = dc.getWidth() / 2;
         var bkColor = Graphics.COLOR_BLACK;
-        if( Toybox.WatchUi.CustomMenu has :isTitleSelected ) {
+        if (Ui.CustomMenu has :isTitleSelected) {
             bkColor = isTitleSelected() ? Graphics.COLOR_BLUE : Graphics.COLOR_BLACK;
         }
         dc.setColor(bkColor, bkColor);
@@ -187,21 +187,21 @@ class WrapBottomMenu extends WatchUi.CustomMenu {
 }
 
 //This is the menu input delegate shared by all the basic sub-menus in the application
-class WrapTopCustomDelegate extends WatchUi.Menu2InputDelegate {
+class WrapTopCustomDelegate extends Ui.Menu2InputDelegate {
     function initialize() {
         Menu2InputDelegate.initialize();
     }
 
     function onSelect(item) {
-        WatchUi.requestUpdate();
+        Ui.requestUpdate();
     }
 
     function onBack() {
-        WatchUi.popView(WatchUi.SLIDE_DOWN);
+        Ui.popView(Ui.SLIDE_DOWN);
     }
 
     function onWrap(key) {
-        if(key == WatchUi.KEY_DOWN) {
+        if(key == Ui.KEY_DOWN) {
             logDebug("onWrap");
             //pushWrapCustomBottom();
         }
@@ -215,36 +215,36 @@ class WrapTopCustomDelegate extends WatchUi.Menu2InputDelegate {
 }
 
 //This is the menu input delegate shared by all the basic sub-menus in the application
-class WrapBottomCustomDelegate extends WatchUi.Menu2InputDelegate {
+class WrapBottomCustomDelegate extends Ui.Menu2InputDelegate {
     function initialize() {
         Menu2InputDelegate.initialize();
     }
 
     function onSelect(item) {
-        WatchUi.requestUpdate();
+        Ui.requestUpdate();
     }
 
     function onBack() {
-        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
-        WatchUi.popView(WatchUi.SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
+        Ui.popView(Ui.SLIDE_IMMEDIATE);
     }
 
     function onWrap(key) {
-        if(key == WatchUi.KEY_UP) {
-            WatchUi.popView(WatchUi.SLIDE_DOWN);
+        if(key == Ui.KEY_UP) {
+            Ui.popView(Ui.SLIDE_DOWN);
         }
         return false;
     }
 
     function onTitle() {
-        WatchUi.popView(WatchUi.SLIDE_DOWN);
+        Ui.popView(Ui.SLIDE_DOWN);
     }
 }
 
 // This is the custom Icon drawable. It fills the icon space with a color to
 // to demonstrate its extents. It changes color each time the next state is
 // triggered, which is done when the item is selected in this application.
-class CustomIcon extends WatchUi.Drawable {
+class CustomIcon extends Ui.Drawable {
     // This constant data stores the color state list.
     const mColors = [Graphics.COLOR_RED, Graphics.COLOR_ORANGE, Graphics.COLOR_YELLOW, Graphics.COLOR_GREEN, Graphics.COLOR_BLUE, Graphics.COLOR_PURPLE];
     const mColorStrings = ["Red", "Orange", "Yellow", "Green", "Blue", "Violet"];

@@ -1,21 +1,21 @@
-using Toybox.WatchUi;
+using Toybox.WatchUi as Ui;
 using Toybox.Graphics;
 using Toybox.Position;
 
 function pushTagMenu(tags) {
-    var menu = new WatchUi.Menu2({:title=>tags["name"]});
+    var menu = new Ui.Menu2({:title=>tags["name"]});
 
 	var tagKeys = tags.keys();
 	for (var i = 0; i < tagKeys.size(); i++) {
 		var key = tagKeys[i];
 		var value = tags[key];
-        menu.addItem(new WatchUi.MenuItem(key, value, i, null));
+        menu.addItem(new Ui.MenuItem(key, value, i, null));
 	}
 	menu.addItem(new CustomWrapItem(:navigateTo, "Navigate To", Graphics.COLOR_BLUE));
-    WatchUi.pushView(menu, new TagMenuDelegate(tags), WatchUi.SLIDE_UP);
+    Ui.pushView(menu, new TagMenuDelegate(tags), Ui.SLIDE_UP);
 }
 
-class TagMenuDelegate extends WatchUi.Menu2InputDelegate {
+class TagMenuDelegate extends Ui.Menu2InputDelegate {
 	hidden var elements;
 
     function initialize(el) {
@@ -27,7 +27,7 @@ class TagMenuDelegate extends WatchUi.Menu2InputDelegate {
     }
 
     function onBack() {
-        WatchUi.popView(WatchUi.SLIDE_DOWN);
+        Ui.popView(Ui.SLIDE_DOWN);
     }
 }
 

@@ -1,12 +1,8 @@
-using Toybox.WatchUi;
+using Toybox.WatchUi as Ui;
 using Toybox.Communications;
 using Toybox.Lang;
-//using LogBarrel.Logger as Logger;
 
 module OverpassBarrel {
-
-//module OverpassAPI {
-
 	function getProxy(options) {
 		return new OverpassProxy(options);
 	}
@@ -14,26 +10,26 @@ module OverpassBarrel {
 	class OverpassProxy {
 		hidden var searchActive = false;
 		hidden var options;
-		
+
 	    function initialize(options) {
-	        self.options = options; 
+	        self.options = options;
 	    }
-		
+
 		function query() {
 			var url = "http://www.overpass-api.de/api/interpreter?data=[out:json];node[amenity=restaurant](48.14,11.64,48.16,11.66);out%20meta;";
-	
-	        WatchUi.pushView(new WatchUi.ProgressBar("searching...", null), new ProgressDelegate(), WatchUi.SLIDE_DOWN);
-	
+
+	        Ui.pushView(new Ui.ProgressBar("searching...", null), new ProgressDelegate(), Ui.SLIDE_DOWN);
+
 	    	Communications.makeJsonRequest(url, null, null, method(:onQueryOverPassResponse));
 			searchActive = true;
 		}
-	
+
 	    function onQueryOverPassResponse(code, data) {
 	    	logDebug("onQueryOverPassResponse(" + code + ")");
-	
+
 			if (searchActive) {
-		        WatchUi.popView(WatchUi.SLIDE_UP);
-		
+		        Ui.popView(Ui.SLIDE_UP);
+
 		        if (code == 200) {
 		        	var elements = data["elements"];
 					for (var i = 0; i < elements.size(); i++) {
@@ -50,13 +46,13 @@ module OverpassBarrel {
 			}
 			options[:result].invoke(code, data);
 	    }
-	    
+
 	    function logDebug(message) {
 			if (options.hasKey(:logDebug)) {
 				options[:logDebug].invoke("OverpassProxy", message);
 			}
 	    }
-	    
+
 	    function logError(message) {
 			if (options.hasKey(:logError)) {
 				options[:logError].invoke("OverpassProxy", message);
@@ -64,12 +60,12 @@ module OverpassBarrel {
 	    }
 	}
 
-	class ProgressDelegate extends WatchUi.BehaviorDelegate
+	class ProgressDelegate extends Ui.BehaviorDelegate
 	{
 	    function initialize() {
 	        BehaviorDelegate.initialize();
 	    }
-	
+
 	    function onBack() {
 			Communications.cancelAllRequests();
 			searchActive= false;
