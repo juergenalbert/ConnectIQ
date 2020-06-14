@@ -80,7 +80,12 @@ module DialogBarrel {
                     break;
             }
 
-			var currentTop = (dc.getHeight() - getCellHeight(currentItem, dc)) / 2;
+			var currentTop;
+            if (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_RECTANGLE/* && dc.getHeight() >= 400*/) {
+			 	currentTop = dc.getHeight() * .25;
+			} else {
+			 	currentTop = (dc.getHeight() - getCellHeight(currentItem, dc)) / 2;
+			}
 			var y = currentTop;
 			var index;
 			for (index = currentItem - 1; y >= 0 && index >= 0; index--) {
@@ -111,51 +116,6 @@ module DialogBarrel {
 
 	        	index++;
 	        } while (index < model.size() && y < dc.getHeight());
-
-
-
-			/*
-        	// title
-        	var y = 0;
-        	if (currentItem == 0) {
-        		y = HEADER_HEIGHT;
-        		topItem = 0;
-        	} else if (currentItem == 1) {
-        		y = HEADER_HEIGHT / 2;
-        		topItem = 0;
-        	} else {
-        		topItem = currentItem - 2;
-        	}
-        	y += fraction;
-        	if (currentItem < 2) {
-	            dc.setColor(Gfx.COLOR_WHITE, Gfx.COLOR_WHITE);
-	            dc.fillRectangle(0, 0, dc.getWidth(), y);
-	            dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_TRANSPARENT);
-	        	dc.drawText(dc.getWidth() / 2, y - Gfx.getFontHeight(font), font, title, Gfx.TEXT_JUSTIFY_CENTER);
-
-        		if (currentItem == 0 && wrapStyle == LEAVE_TITLE) {
-					drawUpArrow(dc, dc.getWidth() / 2, ARROW_PADDING + fraction, Gfx.COLOR_BLACK);
-				}
-			}
-
-        	cellDrawable.setSize(dc.getWidth() * .9, 0);
-        	var	index = topItem;
-        	do {
-	        	// entries
-	        	cellDrawable.setModel(model[index]);
-	        	cellDrawable.setSelected(index == currentItem);
-	        	cellDrawable.setLocation(dc.getWidth() * .05, y);
-	        	cellDrawable.draw(dc);
-
-	        	y += cellDrawable.height;
-	        	while (cellHeights.size() <= index) {
-	        		cellHeights.add(0);
-	        	}
-	        	cellHeights[index] = cellDrawable.height;
-
-	        	index++;
-	        } while (index < model.size() && y < dc.getHeight());
-	        */
         }
 
         function getCellHeight(index, dc) {
@@ -250,15 +210,37 @@ module DialogBarrel {
         }
 
         function onPreviousPage() {
+            logDebug("onPreviousPage");
         	view.up();
         }
 
         function onNextPage() {
+            logDebug("onNextPage");
         	view.down();
         }
 
         function onSelect() {
-        	view.selectCurrent();
+            logDebug("onSelect");
+            if (!System.getDeviceSettings().isTouchScreen) {
+        		view.selectCurrent();
+            }
+            return false;
+        }
+
+        function onSwipe(swipeEvent) {
+            logDebug("onSwipe");
+            var dir = swipeEvent.getDirection();
+            if (dir == Ui.SWIPE_DOWN) {
+                view.up();
+            } else if (dir == Ui.SWIPE_UP) {
+                view.down();
+            }
+            return false;
+        }
+
+        function onTap(clickEvent) {
+            logDebug("onTap");
+            return true;
         }
     }
 
