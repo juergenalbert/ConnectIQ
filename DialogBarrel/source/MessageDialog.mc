@@ -128,21 +128,6 @@ module DialogBarrel {
 
         function openMenu() {
             var menuView;
-            /*
-            if (WatchUi has :Menu2) {
-                menuView = new Ui.Menu2({:title => new DrawableMenuTitle(title)});
-                for (var i = 0; i < menu.size(); i++) {
-                    menuView.addItem(new Ui.MenuItem(menu[i][:text], null, i, null));
-                }
-                Ui.pushView(menuView, new MessageMenu2Delegate(menu), Ui.SLIDE_UP);
-            } else {
-                menuView = new Ui.Menu();
-                for (var i = 0; i < menu.size(); i++) {
-                    menuView.addItem(menu[i][:text], i);
-                }
-                Ui.pushView(menuView, new MessageMenuDelegate(menu), Ui.SLIDE_UP);
-            }
-            */
             menuView = new ListView({
             	:title => title,
             	:type => ListView.SINGLE_SELECT,
@@ -428,7 +413,6 @@ module DialogBarrel {
             if (scrollPos + numLines <= lines.size()) {
                 scrolling = DOWN;
                 scrollCount = numLines / 2;
-                //scrollPos++;
                 Ui.requestUpdate();
                 return true;
             } else {
@@ -439,7 +423,6 @@ module DialogBarrel {
         function scrollUp() {
             if (scrollPos > 0) {
                 scrolling = UP;
-                //scrollPos--;
                 scrollCount = numLines / 2;
                 Ui.requestUpdate();
                 return true;
