@@ -3,13 +3,29 @@ using Toybox.StringUtil;
 using Toybox.Graphics as Gfx;
 
 module DialogBarrel {
-    const SCROLL_DELAY = 50;
-    const SCROLL_FRACTION_STEPS = 3;
 
+    class NullLogger {
+        function debug(message) {}
+        function error(message) {}
+        function logException(exception) {}
+        function logVariable(variableName, variable) {}
+    }
+    
     var scrollTimer = new Timer.Timer();
+    var NL = new NullLogger();
 
     const ARROW_PADDING = 7;
     const ARROW_SIZE = 10;
+    const SCROLL_DELAY = 50;
+    const SCROLL_FRACTION_STEPS = 3;
+
+    function getLogger(tag) {
+        if ($ has :LogBarrel) {
+            return LogBarrel.getLogger(tag);
+        } else {
+            return NL;
+        }
+    }
 
     function drawDownArrow(dc, x, y, color) {
         dc.setPenWidth(1);
@@ -31,25 +47,11 @@ module DialogBarrel {
         }
     }
 
-    function logDebug(message) {
-        if ($ has :LogBarrel) {
-            LogBarrel.logDebug(:DialogBarrel, message);
-        }
-    }
-
-    function logError(message) {
-        if ($ has :LogBarrel) {
-            LogBarrel.logError(:DialogBarrel, message);
-        }
-    }
-
-    function logVariable(name, value) {
-        if ($ has :LogBarrel) {
-            LogBarrel.logVariable(:DialogBarrel, name, value);
-        }
-    }
-
     function splitText(text, font, dc, width, lines) {
+        if (text == null) {
+            return;
+        }
+        
         var chars = text.toCharArray();
         var startPos = 0;
         var endPos = 0;
@@ -63,6 +65,8 @@ module DialogBarrel {
             var lastChar;
             do {
                 endPos++;
+                charArray = chars.slice(startPos, endPos + 1);
+                testee = StringUtil.charArrayToString(charArray);
                 if (endPos >= chars.size()) {
                     breakAll = true;
                     break;
@@ -71,12 +75,12 @@ module DialogBarrel {
                 if (lastChar == ' ' || lastChar == '\t' || lastChar == '\n') {
                     lastSplit = endPos;
                 }
-                charArray = chars.slice(startPos, endPos + 1);
-                testee = StringUtil.charArrayToString(charArray);
                 testeeWidth = dc.getTextWidthInPixels(testee, font);
             } while (testeeWidth < width && lastChar != '\n');
             if (breakAll) {
-                lines.add(testee);
+                if (testee.length() > 0) {
+                    lines.add(testee);
+                }
             } else if (lastSplit != -1) {
                 testee = StringUtil.charArrayToString(chars.slice(startPos, lastSplit));
                 lines.add(testee);
@@ -84,8 +88,8 @@ module DialogBarrel {
                 endPos = startPos;
             } else {
                 lines.add(testee);
-                startPos = endPos;
+                startPos = endPos + 1;
             }
         } while (!breakAll);
-	}
+    }
 }

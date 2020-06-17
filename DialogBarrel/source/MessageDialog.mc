@@ -6,7 +6,7 @@ using DialogBarrel;
 
 module DialogBarrel {
     function showError(error) {
-        var view = new MessageDialogView(toText(Rez.Strings.Error), Gfx.COLOR_RED, toText(error), [{:text => toText(Rez.Strings.OK), :method => new Toybox.Lang.Method(DialogBarrel, :close)}]);
+        var view = new MessageDialogView(toText(Rez.Strings.Error), Gfx.COLOR_RED, toText(error), [{:text => toText(Rez.Strings.OK), :callback => new Toybox.Lang.Method(DialogBarrel, :close)}]);
         Ui.pushView(view, new MessageDialogDelegate(view), Ui.SLIDE_DOWN);
     }
 
@@ -109,7 +109,7 @@ module DialogBarrel {
         function scrollDown() {
             if (bodyText.atEnd()) {
                 if (menu.size() == 1) {
-                    menu[0][:method].invoke();
+                    menu[0][:callback].invoke();
                 } else if (menu.size() > 1 ) {
                     openMenu();
                 }
@@ -129,12 +129,12 @@ module DialogBarrel {
         function openMenu() {
             var menuView;
             menuView = new ListView({
-            	:title => title,
-            	:type => ListView.SINGLE_SELECT,
-            	:titleStyle => ListView.TITLE_MINIMIZE,
-            	:wrapStyle => ListView.LEAVE_TITLE,
-	            :model => menu,
-            	:cellDrawable => new MenuItemDrawable(),
+                :title => title,
+                :type => ListView.SINGLE_SELECT,
+                :titleStyle => ListView.TITLE_MINIMIZE,
+                :wrapStyle => ListView.LEAVE_TITLE,
+                :model => menu,
+                :cellDrawable => new MenuItemDrawable(null),
             });
             var delegate = new ListViewDelegate(menuView);
             Ui.pushView(menuView, delegate, Ui.SLIDE_UP);
@@ -142,6 +142,7 @@ module DialogBarrel {
     }
 
     class MessageDialogDelegate extends Ui.BehaviorDelegate {
+        var log = getLogger(:MessageDialogDelegate);
         var view;
 
         function initialize(view) {
@@ -150,57 +151,57 @@ module DialogBarrel {
         }
 
         function onMenu() {
-            logDebug("onMenu");
+            log.debug("onMenu");
             view.openMenu();
         }
 
         function onSelect() {
-            logDebug("onSelect");
+            log.debug("onSelect");
             if (!System.getDeviceSettings().isTouchScreen) {
-            	view.zoom();
+                view.zoom();
             }
             return false;
         }
 
         function onBack() {
-            logDebug("onBack");
+            log.debug("onBack");
         }
 
         function pushDialog() {
-            logDebug("pushDialog");
+            log.debug("pushDialog");
         }
 
         function onNextPage() {
-            logDebug("onNextPage");
+            log.debug("onNextPage");
             view.scrollDown();
         }
 
         function onPreviousPage() {
-            logDebug("onPreviousPage");
+            log.debug("onPreviousPage");
             view.scrollUp();
         }
 
         function onResponse(value) {
-            logDebug("onResponse");
+            log.debug("onResponse");
         }
 
         function onTap(clickEvent) {
-            logDebug("onTap");
+            log.debug("onTap");
             if (System.getDeviceSettings().isTouchScreen) {
-	            var ypos = clickEvent.getCoordinates()[1];
-	            if (ypos < view.bodyText.locY) {
-	                view.scrollUp();
-	            } else if (ypos > view.bodyText.locY + view.bodyText.height) {
-	                view.scrollDown();
-	            } else {
-	            	view.zoom();
-	            }
-	        }
+                var ypos = clickEvent.getCoordinates()[1];
+                if (ypos < view.bodyText.locY) {
+                    view.scrollUp();
+                } else if (ypos > view.bodyText.locY + view.bodyText.height) {
+                    view.scrollDown();
+                } else {
+                    view.zoom();
+                }
+            }
             return true;
         }
 
         function onSwipe(swipeEvent) {
-            logDebug("onSwipe");
+            log.debug("onSwipe");
             var dir = swipeEvent.getDirection();
             if (dir == Ui.SWIPE_DOWN) {
                 view.scrollUp();
@@ -220,7 +221,7 @@ module DialogBarrel {
         }
 
         function onMenuItem(item) {
-            menu[item][:method].invoke();
+            menu[item][:callback].invoke();
         }
     }
 
@@ -235,11 +236,11 @@ module DialogBarrel {
         function onSelect(item) {
             var index = item.getId();
             Ui.popView(Ui.SLIDE_DOWN);
-            menu[index][:method].invoke();
+            menu[index][:callback].invoke();
         }
 
         function onWrap(key) {
-            logDebug("onWrap");
+            log.debug("onWrap");
             if(key == Ui.KEY_UP) {
                 Ui.popView(Ui.SLIDE_DOWN);
             }
@@ -359,7 +360,7 @@ module DialogBarrel {
                     fraction = 0;
                     break;
                 case UP:
-                    fraction += lineHeight / SCROLL_FRACTION_STEPS;
+                    fraction += lineHeight; // / SCROLL_FRACTION_STEPS;
                     if (fraction >= lineHeight) {
                         fraction = 0;
                         scrollPos--;
@@ -367,14 +368,14 @@ module DialogBarrel {
                         if (scrollCount == 0 || scrollPos == 0) {
                             scrolling = NONE;
                         } else {
-                    		scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
+                            scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                         }
                     } else {
-                    	scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
+                        scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                     }
                     break;
                 case DOWN:
-                    fraction -= lineHeight / SCROLL_FRACTION_STEPS;
+                    fraction -= lineHeight; // / SCROLL_FRACTION_STEPS;
                     if (fraction <= -lineHeight) {
                         fraction = 0;
                         scrollPos++;
@@ -382,10 +383,10 @@ module DialogBarrel {
                         if (scrollCount == 0 || scrollPos + numLines > lines.size()) {
                             scrolling = NONE;
                         } else {
-                    		scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
+                            scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                         }
                     } else {
-                    	scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
+                        scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                     }
                     break;
             }
@@ -405,9 +406,9 @@ module DialogBarrel {
             }
         }
 
-		function updateUi() {
-			Ui.requestUpdate();
-		}
+        function updateUi() {
+            Ui.requestUpdate();
+        }
 
         function scrollDown() {
             if (scrollPos + numLines <= lines.size()) {
@@ -451,7 +452,7 @@ module DialogBarrel {
             numLines = (height + fontDescent) / fontHeight + 1;
             lineHeight = fontHeight;
 
-    		splitText(text, font, dc, width, lines);
+            splitText(text, font, dc, width, lines);
         }
 
         function setColor(color) {

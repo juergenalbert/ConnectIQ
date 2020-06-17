@@ -1,0 +1,161 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.56.1004 6cd3eaec",
+  "osm3s": {
+    "timestamp_osm_base": "2020-06-17T20:21:03Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 289400349,
+  "lat": 48.1469231,
+  "lon": 11.6404019,
+  "timestamp": "2018-11-17T16:09:15Z",
+  "version": 10,
+  "changeset": 64599852,
+  "user": "Maximum",
+  "uid": 60400,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "italian",
+    "name": "Trattoria da Ciccio",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 291076831,
+  "lat": 48.1505273,
+  "lon": 11.6455683,
+  "timestamp": "2016-04-10T11:41:24Z",
+  "version": 5,
+  "changeset": 38448632,
+  "user": "seeba8",
+  "uid": 3806023,
+  "tags": {
+    "addr:housenumber": "1",
+    "addr:street": "Hohensalzaer Straße",
+    "amenity": "restaurant",
+    "cuisine": "bavarian",
+    "name": "Wirtshaus zur Marienburg",
+    "opening_hours": "Mo-Su 11:30-24:00",
+    "website": "http://www.wirtshauszurmarienburg.de/",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 292738172,
+  "lat": 48.1505284,
+  "lon": 11.6577484,
+  "timestamp": "2018-07-31T02:10:42Z",
+  "version": 5,
+  "changeset": 61213001,
+  "user": "TK1968",
+  "uid": 3477437,
+  "tags": {
+    "amenity": "restaurant",
+    "cuisine": "german",
+    "name": "Zur Post",
+    "opening_hours": "Su-Fr 11:30-14:00, Mo-Fr 17:00-22:00",
+    "wheelchair": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 296953321,
+  "lat": 48.1405652,
+  "lon": 11.6429157,
+  "timestamp": "2017-07-09T15:58:43Z",
+  "version": 6,
+  "changeset": 50155854,
+  "user": "Maturi0n",
+  "uid": 2052948,
+  "tags": {
+    "addr:city": "München",
+    "addr:housenumber": "1",
+    "addr:postcode": "81929",
+    "addr:street": "Lüderitzstraße",
+    "amenity": "restaurant",
+    "cuisine": "italian",
+    "name": "Restaurant Neptun",
+    "opening_hours": "Mo-Su 11:30-23:30",
+    "website": "http://www.restaurant-neptun.de/"
+  }
+},
+{
+  "type": "node",
+  "id": 313671282,
+  "lat": 48.1427024,
+  "lon": 11.6495504,
+  "timestamp": "2017-03-16T06:03:36Z",
+  "version": 10,
+  "changeset": 46888428,
+  "user": "parukhin",
+  "uid": 519501,
+  "tags": {
+    "addr:city": "München",
+    "addr:housenumber": "20",
+    "addr:postcode": "81929",
+    "addr:street": "Stefan-George-Ring",
+    "amenity": "restaurant",
+    "contact:website": "http://goldenelilie.beepworld.de/index.htm",
+    "cuisine": "chinese",
+    "name": "Goldene Lilie",
+    "opening_hours": "Su-Fr 11:30-15:00, 17:30-23:00",
+    "wheelchair": "limited"
+  }
+},
+{
+  "type": "node",
+  "id": 2377049019,
+  "lat": 48.1416460,
+  "lon": 11.6419308,
+  "timestamp": "2017-07-09T15:51:29Z",
+  "version": 3,
+  "changeset": 50155709,
+  "user": "Maturi0n",
+  "uid": 2052948,
+  "tags": {
+    "addr:housenumber": "8",
+    "addr:street": "Stadeweg",
+    "amenity": "restaurant",
+    "cuisine": "regional",
+    "name": "Bernds Bienenstock",
+    "phone": "+49 (0)89 42095339",
+    "website": "http://www.bernds-bienenstock.de/"
+  }
+},
+{
+  "type": "node",
+  "id": 2869818611,
+  "lat": 48.1514468,
+  "lon": 11.6406854,
+  "timestamp": "2020-04-14T16:25:11Z",
+  "version": 5,
+  "changeset": 83545563,
+  "user": "s_Frantz",
+  "uid": 47355,
+  "tags": {
+    "addr:city": "München",
+    "addr:housenumber": "45",
+    "addr:postcode": "81927",
+    "addr:street": "Ostpreußenstraße",
+    "amenity": "restaurant",
+    "cuisine": "indian",
+    "description:covid19": "Take-away möglich",
+    "level": "0",
+    "name": "Amber",
+    "opening_hours": "Su 12:00-23:00; Mo-Fr 11:30-14:30,17:30-23:30; Sa 17:30-23:30",
+    "opening_hours:covid19": "Mo-Fr 11:30-21:00; Sa 17:00-21:00; Su 12:00-21:00",
+    "phone": "+49 89 99939775",
+    "smoking": "outside",
+    "takeaway:covid19": "yes",
+    "website": "https://amber-restaurant.de/"
+  }
+}
+
+  ]
+}

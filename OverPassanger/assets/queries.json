@@ -1,15 +1,16 @@
 {
   "version": "0.1",
+  "origin": "https://raw.githubusercontent.com/juergenalbert/ConnectIQ/master/OverPassanger/assets/queries.json",
   "queries": [
     {
       "name": "restaurants",
-      "subtitle": "bla",
+      "description": "Hier gibt es was zu Essen.",
       "subtitleTag": "cuisine",
       "query": "node[amenity=restaurant]"
     },
     {
       "name": "shelters",
-      "subtitle": "blubber",
+      "description": "Hier kann man mit Schlafsack und Isomatte im Trockenen übernachten.",
       "query": "node[amenity=shelter]"
     }
   ]

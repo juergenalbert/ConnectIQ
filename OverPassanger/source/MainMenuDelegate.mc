@@ -6,37 +6,23 @@ using Toybox.Application.Storage;
 using Toybox.Background;
 using OverpassBarrel as Overpass;
 using DialogBarrel as Dialog;
+using LogBarrel;
 
 class MainMenuDelegate extends Ui.MenuInputDelegate {
+    var log = LogBarrel.getLogger(:MainMenuDelegate);
     var searchActive = false;
 
-    function logDebug(message) {
-        if ($ has :LogBarrel) {
-            LogBarrel.logDebug(:MainMenuDelegate, message);
-        }
-    }
-
-    function logError(message) {
-        if ($ has :LogBarrel) {
-            LogBarrel.logError(:MainMenuDelegate, message);
-        }
-    }
-
-    function logVariable(name, value) {
-        if ($ has :LogBarrel) {
-            LogBarrel.logVariable(:MainMenuDelegate, name, value);
-        }
-    }
-
     function initialize() {
+        log.debug(:initialize);
         MenuInputDelegate.initialize();
     }
 
     function onMenuItem(item) {
-        logVariable("item", item);
+        log.debug(:onMenuItem);
         self.method(item).invoke();
     }
 
+    /*
     // for menu2
     function onSelect(item) {
         self.method(item.getId()).invoke();
@@ -44,11 +30,12 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
 
     // for menu2
     function onWrap(key) {
-        logDebug("onWrap");
+        log.debug("onWrap");
     }
+    */
 
     function createAppWaypoints() {
-        logDebug("createWaypoints");
+        log.debug("createWaypoints");
         for (var i = 0; i < 100; i++) {
             var location = new Position.Location ({
                 :latitude => 48.130366 + i * 0.01,
@@ -60,12 +47,12 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
             };
 
             PersistedContent.saveWaypoint(location, options);
-            logDebug("Waypoint created: " + options);
+            log.debug("Waypoint created: " + options);
         }
     }
 
     function createWaypoints() {
-        logDebug("createWaypoints");
+        log.debug("createWaypoints");
         for (var i = 0; i < 100; i++) {
             var location = new Position.Location ({
                 :latitude => 48.130366 + i * 0.01,
@@ -77,7 +64,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
             };
 
             PersistedContent.saveWaypoint(location, options);
-            logDebug("Waypoint created: " + options);
+            log.debug("Waypoint created: " + options);
         }
     }
 
@@ -127,7 +114,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
             var name = options.get(:name);
 
             Storage.setValue(name, name);
-            logDebug("Waypoint created: " + options);
+            log.debug("Waypoint created: " + options);
         }
     }
 
@@ -139,7 +126,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
                 if (value == null) {
                 break;
             }
-            logVariable("Waypoint read: ", value);
+            log.logVariable("Waypoint read: ", value);
             i++;
         } while (true);
     }
@@ -159,11 +146,12 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
     }
 
     function queryOverPassResult(code, data) {
-        logVariable("queryOverPassResult code", code);
-        logVariable("queryOverPassResult data", data);
+        log.logVariable("queryOverPassResult code", code);
+        log.logVariable("queryOverPassResult data", data);
     }
 
     function queryList() {
+        log.debug("queryList");
         var url = Application.getApp().getProperty("QueriesURL");
 
         var mySettings = System.getDeviceSettings();
@@ -171,7 +159,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
         if (phoneConnected) {
             Dialog.showProgress("searching...", method(:stopSearch));
             var options = {
-                :method => Communications.HTTP_REQUEST_METHOD_GET,
+                :callback => Communications.HTTP_REQUEST_METHOD_GET,
                 :headers => {
                    "Content-Type" => Communications.REQUEST_CONTENT_TYPE_JSON
                 },
@@ -185,27 +173,27 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
     }
 
     function stopSearch() {
-        logDebug("stopSearch");
+        log.debug("stopSearch");
         searchActive = false;
         Communications.cancelAllRequests();
     }
 
     function onQueriesResponse(code, data) {
-        logDebug("onQueriesResponse(" + code + ")");
+        log.debug("onQueriesResponse(" + code + ")");
 
         if (searchActive) {
             Ui.popView(Ui.SLIDE_DOWN);
 
             if (code == 200) {
                 Storage.setValue("queries", data["queries"]);
-                pushQueryMenu(data["queries"]);
+                new QueriesDialog().show(data["queries"]);
             } else {
                 logError("queryList terminated with " + code);
                 var queries = Storage.getValue("queries");
                 if (queries == null) {
                     Dialog.showError(Rez.Strings.NoQueries);
                 } else {
-                    pushQueryMenu(queries);
+                    new QueriesDialog().show(queries);
                 }
             }
         }
@@ -213,29 +201,29 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
 
     function readData() {
         var searchResult = Storage.getValue("search_result");
-        logVariable("searchResult", searchResult);
+        log.logVariable("searchResult", searchResult);
     }
 
-	function listViewTest() {
+    function listViewTest() {
         var options = {
-        	:title => "ListView Test",
-        	:type => Dialog.ListView.SINGLE_SELECT,
-        	:titleStyle => Dialog.ListView.TITLE_MINIMIZE,
-        	:wrapStyle => Dialog.ListView.LEAVE_TITLE,
+            :title => "ListView Test",
+            :type => Dialog.ListView.SINGLE_SELECT,
+            :titleStyle => Dialog.ListView.TITLE_MINIMIZE,
+            :wrapStyle => Dialog.ListView.LEAVE_TITLE,
             :model => [
-                {:text => "Verwerfen", :method => method(:dismiss)},
-                {:text => "Akzeptieren", :method => method(:accept)},
-                {:text => "Verwerfen\nOption 2", :method => method(:dismiss)},
-                {:text => "Akzeptieren und lorem ipsum uns so weiter", :method => method(:accept)},
-                {:text => "Verwerfen kurz", :method => method(:dismiss)},
-                {:text => "Akzeptieren laaaaaaaaaaaaaaaaaaaaaaaaaaaang", :method => method(:accept)},
-                {:text => "Verwerfen\ntri\ntra\ntrullala", :method => method(:dismiss)},
-                {:text => "Akzeptieren endlich", :method => method(:accept)},
+                {:text => "Verwerfen", :callback => method(:dismiss)},
+                {:text => "Akzeptieren", :callback => method(:accept)},
+                {:text => "Verwerfen\nOption 2", :callback => method(:dismiss)},
+                {:text => "Akzeptieren und lorem ipsum uns so weiter", :callback => method(:accept)},
+                {:text => "Verwerfen kurz", :callback => method(:dismiss)},
+                {:text => "Akzeptieren laaaaaaaaaaaaaaaaaaaaaaaaaaaang", :callback => method(:accept)},
+                {:text => "Verwerfen\ntri\ntra\ntrullala", :callback => method(:dismiss)},
+                {:text => "Akzeptieren endlich", :callback => method(:accept)},
             ],
-        	:cellDrawable => new Dialog.MenuItemExDrawable(),
+            :cellDrawable => new Dialog.MenuItemExDrawable(null),
         };
         Dialog.showListView(options);
-	}
+    }
 
     function messageTest() {
         var options = {
@@ -243,27 +231,31 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
             //:text => "Lorem abcdefghijklmnopqrstuvwxyz\nIn Connect IQ 3.1, these are no longer issues thanks to Ui.TextArea and relative coordinates. The Ui.TextArea is a super powered upgrade to Ui.Text.\nLorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.",
             :text => "Lorem abcdefghijklmnopqrstuvwxyz\nIn Connect IQ 3.1, these are no longer issues thanks to Ui.TextArea and relative coordinates.",
             :menu => [
-                {:text => "Verwerfen", :method => method(:dismiss)},
-                {:text => "Akzeptieren", :method => method(:accept)},
-                {:text => "Verwerfen 2", :method => method(:dismiss)},
-                {:text => "Akzeptieren 2", :method => method(:accept)},
-                {:text => "Verwerfen 3", :method => method(:dismiss)},
-                {:text => "Akzeptieren 3", :method => method(:accept)},
-                {:text => "Verwerfen 4", :method => method(:dismiss)},
-                {:text => "Akzeptieren 4", :method => method(:accept)},
+                {:text => "Verwerfen", :callback => method(:dismissAndClose)},
+                {:text => "Akzeptieren", :callback => method(:dismissAndClose)},
             ]
         };
         Dialog.showMessage(options);
     }
 
-    function dismiss() {
-        logDebug("dismiss");
+    function dismissAndClose() {
+        log.debug("dismiss");
+        Ui.popView(Ui.SLIDE_DOWN);
         Ui.popView(Ui.SLIDE_DOWN);
     }
 
-    function accept() {
-        logDebug("accept");
+    function acceptAndClose() {
+        log.debug("accept");
         Ui.popView(Ui.SLIDE_DOWN);
+        Ui.popView(Ui.SLIDE_DOWN);
+    }
+
+    function dismiss() {
+        log.debug("dismiss");
+    }
+
+    function accept() {
+        log.debug("accept");
     }
 }
 

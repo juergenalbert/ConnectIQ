@@ -1,8 +1,11 @@
 using Toybox.Application;
+using Toybox.Timer;
 using Toybox.WatchUi as Ui;
-using LogBarrel.Logger as Logger;
+using LogBarrel;
 
 class OverPassangerApp extends Application.AppBase {
+
+    var log = LogBarrel.getLogger(:OverPassangerApp);
 
     function initialize() {
         AppBase.initialize();
@@ -33,6 +36,7 @@ class OverPassangerApp extends Application.AppBase {
     }
 
     class DummyView extends Ui.View {
+        var log = LogBarrel.getLogger(:DummyView);
         hidden var menu;
         hidden var delegate;
         hidden var firstTime = true;
@@ -44,12 +48,12 @@ class OverPassangerApp extends Application.AppBase {
         }
     
         function onLayout(dc) {
-            logDebug("onLayout");
+            log.debug("onLayout");
             View.onLayout(dc);
         }
         // onShow() is called when this View is brought to the foreground
         function onShow() {
-            logDebug("onShow");
+            log.debug("onShow");
             if (firstTime) {
                 firstTime = false;
                 new Timer.Timer().start(method(:startupTimerCallback), 100, false);
@@ -64,20 +68,13 @@ class OverPassangerApp extends Application.AppBase {
         
         // onUpdate() is called periodically to update the View
         function onUpdate(dc) {
-            logDebug("onUpdate");
+            log.debug("onUpdate");
             View.onUpdate(dc);
         }
     
         // onHide() is called when this View is removed from the screen
         function onHide() {
-            logDebug("onHide");
-            //Ui.popView(Ui.SLIDE_IMMEDIATE);
-        }
-
-        function logDebug(message) {
-            if ($ has :LogBarrel) {
-                Logger.logDebug(:OverPassangerApp, message);
-            }
+            log.debug("onHide");
         }
     }
 }
