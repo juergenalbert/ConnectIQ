@@ -209,7 +209,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
             :title => "ListView Test",
             :type => Dialog.ListView.SINGLE_SELECT,
             :titleStyle => Dialog.ListView.TITLE_MINIMIZE,
-            :wrapStyle => Dialog.ListView.LEAVE_TITLE,
+            :wrapStyle => Dialog.ListView.WRAP_NONE,
             :model => [
                 {:text => "Verwerfen", :callback => method(:dismiss)},
                 {:text => "Akzeptieren", :callback => method(:accept)},

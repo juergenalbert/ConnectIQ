@@ -38,9 +38,10 @@ module DialogBarrel {
         hidden var topItem = 0;
         hidden var cellHeights = [];
 
-        hidden var fraction;
+        hidden var fraction = 0;
         hidden var scrolling = NONE;
         hidden var scrollHeight;
+        hidden var currentTop = -1;
 
         function initialize(options) {
             log.debug(:initialize);
@@ -69,40 +70,46 @@ module DialogBarrel {
                     scrollHeight = 0;
                     break;
                 case UP:
-                    if (scrollHeight == 0) {
-                        scrollHeight = (getCellHeight(currentItem, dc) + getCellHeight(currentItem - 1, dc)) / 2;
-                    }
-                    fraction += scrollHeight / SCROLL_FRACTION_STEPS;
-                    if (fraction >= scrollHeight) {
-                        fraction = 0;
+                    if (needScrolling(dc)) {
+                        if (scrollHeight == 0) {
+                            scrollHeight = (getCellHeight(currentItem, dc) + getCellHeight(currentItem - 1, dc)) / 2;
+                        }
+                        fraction += scrollHeight / SCROLL_FRACTION_STEPS;
+                        if (fraction >= scrollHeight) {
+                            fraction = 0;
+                            currentItem--;
+                            topItem = currentItem;
+                            scrolling = NONE;
+                        }
+                        scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
+                    } else {
                         currentItem--;
                         scrolling = NONE;
                     }
-                    scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                     break;
                 case DOWN:
-                    if (scrollHeight == 0) {
-                        scrollHeight = (getCellHeight(currentItem, dc) + getCellHeight(currentItem + 1, dc)) / 2;
-                    }
-                    fraction -= scrollHeight / SCROLL_FRACTION_STEPS;
-                    if (fraction <= -scrollHeight) {
-                        fraction = 0;
+                    if (needScrolling(dc)) {
+                        if (scrollHeight == 0) {
+                            scrollHeight = (getCellHeight(currentItem, dc) + getCellHeight(currentItem + 1, dc)) / 2;
+                        }
+                        fraction -= scrollHeight / SCROLL_FRACTION_STEPS;
+                        if (fraction <= -scrollHeight) {
+                            fraction = 0;
+                            currentItem++;
+                            topItem = currentItem;
+                            scrolling = NONE;
+                        }
+                        scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
+                    } else {
                         currentItem++;
                         scrolling = NONE;
                     }
-                    scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                     break;
             }
 
-            var currentTop;
-            if (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_RECTANGLE/* && dc.getHeight() >= 400*/) {
-                currentTop = dc.getHeight() * .25;
-            } else {
-                currentTop = (dc.getHeight() - getCellHeight(currentItem, dc)) / 2;
-            }
-            var y = currentTop;
+            var y = regularTopOfItem(topItem, dc);
             var index;
-            for (index = currentItem - 1; y >= 0 && index >= 0; index--) {
+            for (index = topItem - 1; y >= 0 && index >= 0; index--) {
                 y -= getCellHeight(index, dc);
             }
             if (index < 0) {
@@ -130,10 +137,49 @@ module DialogBarrel {
                 cellDrawable.setLocation(dc.getWidth() * .05, y + fraction);
                 cellDrawable.draw(dc);
 
+                if (index == currentItem) {
+                    currentTop = y;
+                }
+
                 y += cellDrawable.height;
 
                 index++;
             } while (index < model.size() && y < dc.getHeight());
+        }
+
+        function regularTopOfItem(index, dc) {
+            if (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_RECTANGLE/* && dc.getHeight() >= 400*/) {
+                return dc.getHeight() * .25;
+            } else {
+                return (dc.getHeight() - getCellHeight(index, dc)) / 2;
+            }
+        }
+        
+        function needScrolling(dc) {
+            if (fraction > 0) {
+                // we are in scrolling mode, dont calc anything
+                return true;
+            } else {
+                switch (scrolling) {
+                    case UP:
+                        if (topItem > 0) {
+                            return currentTop - getCellHeight(topItem - 1, dc) < regularTopOfItem(0, dc);
+                        } else {
+                            return false;
+                        }
+                    case DOWN:       
+                        if (currentTop < 0) {
+                            currentTop = regularTopOfItem(0, dc);
+                        }
+                        var y = currentTop;
+                        var index = currentItem;
+                        do {
+                            y += getCellHeight(index, dc);
+                            index++;
+                        } while (y < dc.getHeight() && index < model.size());
+                        return (index < model.size());
+                }
+            }
         }
 
         function getCellHeight(index, dc) {
