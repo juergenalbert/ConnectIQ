@@ -61,7 +61,10 @@ module DialogBarrel {
             footerText = findDrawableById("footerText");
 
             headerText.setText(title);
+            headerText.setFont(FontSize.medium());
+
             bodyText.setText(text);
+            bodyText.setFont(FontSize.small());
 
             var f = "";
             if (menu.size() == 1) {
@@ -73,6 +76,7 @@ module DialogBarrel {
                 f = "  " + f;
             }
             footerText.setText(f);
+            footerText.setFont(FontSize.medium());
         }
 
         function onUpdate(dc) {
@@ -98,12 +102,6 @@ module DialogBarrel {
             } else {
                 drawDownArrow(dc, dc.getWidth() / 2, dc.getHeight() - ARROW_SIZE - ARROW_PADDING, Gfx.COLOR_BLACK);
             }
-
-            /*
-            var customFont = Ui.loadResource(Rez.Fonts.icons);
-            dc.setColor(Gfx.COLOR_RED, Gfx.COLOR_WHITE);
-            dc.drawText(40, 40, customFont, "ABC", Graphics.TEXT_JUSTIFY_LEFT);
-            */
         }
 
         function scrollDown() {
@@ -263,37 +261,6 @@ module DialogBarrel {
         }
     }
 
-    class DrawableMenuTitle extends Ui.Drawable {
-        var mIsTitleSelected = false;
-        var title;
-
-        function initialize(title) {
-            Drawable.initialize({});
-            self.title = title;
-        }
-
-        function setSelected(isTitleSelected) {
-            mIsTitleSelected = isTitleSelected;
-        }
-
-        // Draw the application icon and main menu title
-        function draw(dc) {
-            var labelWidth = dc.getTextWidthInPixels(title, Graphics.FONT_MEDIUM);
-
-            var arrowX = (dc.getWidth() - (ARROW_SIZE + ARROW_PADDING + labelWidth)) / 2;
-            var arrowY = (dc.getHeight() - ARROW_SIZE) / 2;
-            var labelX = arrowX + ARROW_SIZE + ARROW_PADDING;
-            var labelY = dc.getHeight() / 2;
-
-            dc.setColor(Graphics.COLOR_BLACK, Graphics.COLOR_BLACK);
-            dc.clear();
-
-            dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
-            dc.drawText(labelX, labelY, Graphics.FONT_TINY, title, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
-            drawUpArrow(dc, arrowX, arrowY, Gfx.COLOR_WHITE);
-        }
-    }
-
     class Background extends Ui.Drawable {
         var color = Gfx.COLOR_BLACK;
 
@@ -332,8 +299,8 @@ module DialogBarrel {
         var text;
         var dcWidth = -1;
         var dcHeight = -1;
-        var fontStandard = Gfx.FONT_MEDIUM;
-        var font = Gfx.FONT_MEDIUM;
+        var fontStandard = FontSize.small();
+        var font = FontSize.small();
         var lines = [];
         var lineHeight;
         var scrollPos = 0;
@@ -346,22 +313,12 @@ module DialogBarrel {
 
         function initialize(options) {
             Drawable.initialize(options);
+            /*
             if (options.hasKey(:font)) {
                 font = options[:font];
             }
             fontStandard = font;
-        }
-
-        function zoom() {
-            font++;
-            scrollPos *= 1.3;
-            if (font == fontStandard + 2) {
-                font = fontStandard - 1;
-                scrollPos /= 2.1;
-            }
-            scrollPos = scrollPos.toNumber();
-            dcWidth = -1;
-            Ui.requestUpdate();
+            */
         }
 
         function draw(dc) {
@@ -422,6 +379,31 @@ module DialogBarrel {
             }
         }
 
+        function setFont(font) {
+            self.font = font;
+        }
+
+
+        function setColor(color) {
+            self.color = color;
+        }
+
+        function setText(text) {
+            self.text = text;
+        }
+        
+        function zoom() {
+            font++;
+            scrollPos *= 1.3;
+            if (font == FontSize.medium() + 1) {
+                font = FontSize.tiny();
+                scrollPos /= 2.1;
+            }
+            scrollPos = scrollPos.toNumber();
+            dcWidth = -1;
+            Ui.requestUpdate();
+        }
+
         function updateUi() {
             Ui.requestUpdate();
         }
@@ -469,14 +451,6 @@ module DialogBarrel {
             lineHeight = fontHeight;
 
             splitText(text, font, dc, width, lines);
-        }
-
-        function setColor(color) {
-            self.color = color;
-        }
-
-        function setText(text) {
-            self.text = text;
         }
     }
 }

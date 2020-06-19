@@ -10,22 +10,20 @@
 			<param name="locX">0</param>
 			<param name="locY">0</param>
 			<param name="width">"100%"</param>
-			<param name="height">"10%"</param>
+			<param name="height">"12%"</param>
 		</drawable>
 		<drawable id="footer" />
-		<label id="headerText" x="center" y="2%" text="headerText"
+		<label id="headerText" x="center" y="2%"
 			color="Graphics.COLOR_WHITE"
-			justification="Graphics.TEXT_JUSTIFY_CENTER"
-			font="Graphics.FONT_MEDIUM" />
+			justification="Graphics.TEXT_JUSTIFY_CENTER"/>
 		<drawable id="bodyText" class="TextArea">
 			<param name="locX">"5%"</param>
-			<param name="locY">"11%"</param>
+			<param name="locY">"13%"</param>
 			<param name="width">"90%"</param>
-			<param name="height">"78%"</param>
+			<param name="height">"77%"</param>
 		</drawable>
-		<label id="footerText" x="center" y="92%" text="  Akzeptieren"
+		<label id="footerText" x="center" y="92%"
 			color="Graphics.COLOR_WHITE"
-			justification="Graphics.TEXT_JUSTIFY_CENTER" 
-			font="Graphics.FONT_MEDIUM"/>
+			justification="Graphics.TEXT_JUSTIFY_CENTER"/>
 	</layout>
 </resources>

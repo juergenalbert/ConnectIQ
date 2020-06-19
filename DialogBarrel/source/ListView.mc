@@ -31,7 +31,7 @@ module DialogBarrel {
         hidden var titleStyle = TITLE_MINIMIZE;
         hidden var wrapStyle = WRAP_NONE;
 
-        hidden var font = Gfx.FONT_SMALL;
+        hidden var font = FontSize.medium();
         hidden var currentItem = 0;
         hidden var topItem = 0;
         hidden var cellHeights = [];
@@ -360,7 +360,7 @@ module DialogBarrel {
         }
 
         function calculateHeight(dc) {
-            var height = Gfx.getFontHeight(Gfx.FONT_MEDIUM) + 2 * PADDING;
+            var height = Gfx.getFontHeight(FontSize.medium()) + 2 * PADDING;
             return [height, height];
         }
         
@@ -368,10 +368,10 @@ module DialogBarrel {
             var font;
             var color;
             if (selected) {
-                font = Gfx.FONT_MEDIUM;
+                font = FontSize.medium();
                 color = Gfx.COLOR_WHITE;
             } else {
-                font = Gfx.FONT_SMALL;
+                font = FontSize.small();
                 color = Gfx.COLOR_LT_GRAY;
             }
 
@@ -407,7 +407,7 @@ module DialogBarrel {
         }
 
         hidden function drawOrCalc(dc, doDraw) {
-            var font = Gfx.FONT_SYSTEM_SMALL;
+            var font = FONT_SIZE.medium();
             var color;
             var bgColor;
 

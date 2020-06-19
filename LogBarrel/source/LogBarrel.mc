@@ -62,9 +62,9 @@ module LogBarrel {
         }
 
         // The string formats to use when printing log messages
-        private static var FORMAT_VARIABLE = "$1$=($2$) $3$";
-        private static var FORMAT_LOG_MESSAGE = "(lmf1)[$1$] {$2$} $3$: $4$";
-        private static var FORMAT_TIMESTAMP = "$1$-$2$-$3$ $4$:$5$:$6$"; // YYYY-MM-DD HH:MM:SS
+        private const FORMAT_VARIABLE = "$1$=($2$) $3$";
+        private const FORMAT_LOG_MESSAGE = "(lmf1)[$1$] {$2$} $3$: $4$";
+        private const FORMAT_TIMESTAMP = "$1$-$2$-$3$ $4$:$5$:$6$"; // YYYY-MM-DD HH:MM:SS
 
         private function formLogMessage(message) {
             // Get a timestamp from the system

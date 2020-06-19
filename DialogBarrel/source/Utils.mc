@@ -1,8 +1,26 @@
 using Toybox.Timer;
 using Toybox.StringUtil;
 using Toybox.Graphics as Gfx;
+using Toybox.WatchUi as Ui;
+using Toybox.System as Sys;
 
 module DialogBarrel {
+    
+    class FontSize { 
+        function tiny() {
+            return Ui.loadResource(Rez.Strings.TINY).toNumber();
+        }
+        function small() {
+            return Ui.loadResource(Rez.Strings.SMALL).toNumber();
+        }
+        function medium() {
+            return Ui.loadResource(Rez.Strings.MEDIUM).toNumber();
+        }
+        function large() {
+            return Ui.loadResource(Rez.Strings.LARGE).toNumber();
+        }
+    }
+    var FONT_SIZE = new FontSize(); 
 
     class NullLogger {
         function debug(message) {}

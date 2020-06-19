@@ -22,18 +22,6 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
         self.method(item).invoke();
     }
 
-    /*
-    // for menu2
-    function onSelect(item) {
-        self.method(item.getId()).invoke();
-    }
-
-    // for menu2
-    function onWrap(key) {
-        log.debug("onWrap");
-    }
-    */
-
     function createAppWaypoints() {
         log.debug("createWaypoints");
         for (var i = 0; i < 100; i++) {
