@@ -11,6 +11,7 @@
             <iq:product id="fr230"/>
             <iq:product id="fr245"/>
             <iq:product id="fr945"/>
+            <iq:product id="gpsmap66"/>
             <iq:product id="vivoactive3"/>
         </iq:products>
         <iq:permissions>

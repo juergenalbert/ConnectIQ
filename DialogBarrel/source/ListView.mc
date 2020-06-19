@@ -243,11 +243,26 @@ module DialogBarrel {
         function onPreviousPage() {
             log.debug("onPreviousPage");
             view.up();
+            return true;
         }
 
         function onNextPage() {
             log.debug("onNextPage");
             view.down();
+            return true;
+        }
+
+        function onKey(keyEvent) {
+            log.debug("onKey");
+            log.logVariable("keyEvent", keyEvent);
+            if (keyEvent.getKey() == Ui.KEY_DOWN) {
+                view.down();
+                return true;
+            } else if (keyEvent.getKey() == Ui.KEY_UP) {
+                view.up();
+                return true;
+            }
+            return false;
         }
 
         function onSelect() {
@@ -266,7 +281,7 @@ module DialogBarrel {
             } else if (dir == Ui.SWIPE_UP) {
                 view.down();
             }
-            return false;
+            return true;
         }
 
         function onTap(clickEvent) {

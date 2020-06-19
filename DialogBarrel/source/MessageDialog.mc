@@ -153,6 +153,7 @@ module DialogBarrel {
         function onMenu() {
             log.debug("onMenu");
             view.openMenu();
+            return true;
         }
 
         function onSelect() {
@@ -160,7 +161,7 @@ module DialogBarrel {
             if (!System.getDeviceSettings().isTouchScreen) {
                 view.zoom();
             }
-            return false;
+            return true;
         }
 
         function onBack() {
@@ -174,11 +175,26 @@ module DialogBarrel {
         function onNextPage() {
             log.debug("onNextPage");
             view.scrollDown();
+            return true;
         }
 
         function onPreviousPage() {
             log.debug("onPreviousPage");
             view.scrollUp();
+            return true;
+        }
+
+        function onKey(keyEvent) {
+            log.debug("onKey");
+            log.logVariable("keyEvent", keyEvent);
+            if (keyEvent.getKey() == Ui.KEY_DOWN) {
+                view.scrollDown();
+                return true;
+            } else if (keyEvent.getKey() == Ui.KEY_UP) {
+                view.scrollUp();
+                return true;
+            }
+            return false;
         }
 
         function onResponse(value) {
@@ -208,7 +224,7 @@ module DialogBarrel {
             } else if (dir == Ui.SWIPE_UP) {
                 view.scrollDown();
             }
-            return false;
+            return true;
         }
     }
 
