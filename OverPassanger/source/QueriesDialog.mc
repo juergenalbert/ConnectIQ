@@ -37,6 +37,7 @@ class QueriesDialog {
         log.debug(:selectQuery);
         var query = itemModel["query"];
         subtitleTag = itemModel["subtitleTag"];
+        
         //var url = "http://www.overpass-api.de/api/interpreter?data=[out:json];" + query + "(48.14,11.64,48.16,11.66);out%20meta;";
         var url = "http://localhost:8080/testquery.json";
     
@@ -64,7 +65,7 @@ class QueriesDialog {
                 new POIDialog().show(elements, subtitleTag);
             } else {
                 log.error("code: " + code);
-                showError("code: " + code);
+                Dialog.showError("code: " + code);
             }
         }
     }

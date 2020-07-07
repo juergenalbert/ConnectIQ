@@ -20,6 +20,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
     function onMenuItem(item) {
         log.debug(:onMenuItem);
         self.method(item).invoke();
+        return true;
     }
 
     function createAppWaypoints() {
@@ -82,7 +83,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
             try {
                 waypoint.remove();
             } catch (e) {
-                logError(e);
+                log.error(e);
             }
             waypoint = iterator.next();
         }
@@ -138,6 +139,10 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
         log.logVariable("queryOverPassResult data", data);
     }
 
+    function testTranslation() {
+        log.debug("testTranslation");
+    }
+
     function queryList() {
         log.debug("queryList");
         var url = Application.getApp().getProperty("QueriesURL");
@@ -176,7 +181,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
                 Storage.setValue("queries", data["queries"]);
                 new QueriesDialog().show(data["queries"]);
             } else {
-                logError("queryList terminated with " + code);
+                log.error("queryList terminated with " + code);
                 var queries = Storage.getValue("queries");
                 if (queries == null) {
                     Dialog.showError(Rez.Strings.NoQueries);
@@ -197,7 +202,7 @@ class MainMenuDelegate extends Ui.MenuInputDelegate {
             :title => "ListView Test",
             :type => Dialog.ListView.SINGLE_SELECT,
             :titleStyle => Dialog.ListView.TITLE_MINIMIZE,
-            :wrapStyle => Dialog.ListView.WRAP_NONE,
+            :wrapStyle => Dialog.ListView.WRAP_BOTH,
             :model => [
                 {:text => "Verwerfen", :callback => method(:dismiss)},
                 {:text => "Akzeptieren", :callback => method(:accept)},

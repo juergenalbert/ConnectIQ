@@ -230,6 +230,7 @@ module DialogBarrel {
                 switch (wrapStyle) {
                     case WRAP_BOTH:
                         currentItem = model.size() - 1;
+                        topItem = currentItem;
                         break;
                     case LEAVE_TITLE:
                         Ui.popView(Ui.SLIDE_DOWN);
@@ -245,7 +246,7 @@ module DialogBarrel {
                 switch (wrapStyle) {
                     case WRAP_BOTH:
                         currentItem = 0;
-                        break;
+                        topItem = currentItem;
                 }
             }
             Ui.requestUpdate();
