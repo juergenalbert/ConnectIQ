@@ -4,14 +4,23 @@ using Toybox.Lang as Lang;
 using Toybox.System as Sys;
 
 module LogBarrel {
+    
+    var cache = {};
 
     function getLogger(tag) {
+        var logger = cache[tag];
+        if (logger != null) {
+            return logger;
+        }
+    
         var logDebug = Toybox.Application.getApp().getProperty("LogDebug");
         if (logDebug) {
-            return new Logger(tag, 'D', Sys);
+            logger = new Logger(tag, 'D', Sys);
         } else {
-            return new Logger(tag, 'E', Sys);
+            logger = new Logger(tag, 'E', Sys);
         }
+        cache[tag] = logger;
+        return logger;
     } 
 
     /*

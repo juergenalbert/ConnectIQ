@@ -9,7 +9,7 @@ module DialogBarrel {
     }
 
     class ListView extends Ui.View {
-        var log = getLogger(:ListView);
+        static var log = getLogger(:ListView);
     
         enum { SINGLE_SELECT, MULTI_SELECT }
         enum { TITLE_MINIMIZE, TITLE_NONE, TITLE_HIDE, TITLE_ALWAYS }
@@ -17,7 +17,7 @@ module DialogBarrel {
 
         enum { NONE, UP, DOWN }
 
-        const SCROLL_FRACTION_STEPS = 3;
+        const SCROLL_FRACTION_STEPS = 2;
         const CELL_WIDTH_PERCENTAGE = .9;
         const CELL_POS_X_PERCENTAGE = (1.0 - CELL_WIDTH_PERCENTAGE) / 2;
 
@@ -59,6 +59,7 @@ module DialogBarrel {
         }
 
         function onUpdate(dc) {
+            log.debug("onUpdate");
             dc.setColor(Gfx.COLOR_BLACK, Gfx.COLOR_BLACK);
             dc.clear();
 
@@ -78,8 +79,9 @@ module DialogBarrel {
                             currentItem--;
                             topItem = currentItem;
                             scrolling = NONE;
+                        } else {
+                            scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                         }
-                        scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                     } else {
                         currentItem--;
                         scrolling = NONE;
@@ -96,8 +98,9 @@ module DialogBarrel {
                             currentItem++;
                             topItem = currentItem;
                             scrolling = NONE;
+                        } else {
+                            scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                         }
-                        scrollTimer.start(method(:updateUi), SCROLL_DELAY, false);
                     } else {
                         currentItem++;
                         scrolling = NONE;
@@ -146,6 +149,7 @@ module DialogBarrel {
         }
 
         function regularTopOfItem(index, dc) {
+            log.debug("regularTopOfItem");
             if (System.getDeviceSettings().screenShape == System.SCREEN_SHAPE_RECTANGLE/* && dc.getHeight() >= 400*/) {
                 return dc.getHeight() * .25;
             } else {
@@ -154,6 +158,7 @@ module DialogBarrel {
         }
         
         function needScrolling(dc) {
+            log.debug("needScrolling");
             if (fraction > 0) {
                 // we are in scrolling mode, dont calc anything
                 return true;
@@ -187,7 +192,9 @@ module DialogBarrel {
         }
 
         function getCellHeight(index, dc) {
+            log.debug("getCellHeight");
             if (index >= cellHeights.size() || cellHeights[index][ListViewDrawable.UNSELECTED] == 0) {
+                log.debug("...calculate");
                 while (cellHeights.size() <= index) {
                     cellHeights.add([0, 0]);
                 }
@@ -220,10 +227,12 @@ module DialogBarrel {
         }
 
         function updateUi() {
+            log.debug("updateUi");
             Ui.requestUpdate();
         }
 
         function up() {
+            log.debug("up");
             if (currentItem > 0) {
                 scrolling = UP;
             } else {
@@ -240,6 +249,7 @@ module DialogBarrel {
         }
 
         function down() {
+            log.debug("down");
             if (currentItem < model.size() - 1) {
                 scrolling = DOWN;
             } else {
@@ -253,6 +263,7 @@ module DialogBarrel {
         }
 
         function selectCurrent() {
+            log.debug("selectCurrent");
             switch (type) {
                 case SINGLE_SELECT:
                     var item = model[currentItem];
@@ -274,7 +285,7 @@ module DialogBarrel {
     }
 
     class ListViewDelegate extends Ui.BehaviorDelegate {
-        var log = getLogger(:ListViewDelegate);
+        static var log = getLogger(:ListViewDelegate);
         hidden var view;
 
         function initialize(view) {
@@ -354,18 +365,22 @@ module DialogBarrel {
     }
 
     class MenuItemDrawable extends ListViewDrawable {
+        static var log = getLogger(:MenuItemDrawable);
         const PADDING = 8;
 
         function initialize(itemToString) {
+            log.debug("initialize");
             ListViewDrawable.initialize(itemToString);
         }
 
         function calculateHeight(dc) {
+            log.debug("calculateHeight");
             var height = Gfx.getFontHeight(FontSize.medium()) + 2 * PADDING;
             return [height, height];
         }
         
         function draw(dc) {
+            log.debug("draw");
             var font;
             var color;
             if (selected) {
@@ -393,43 +408,67 @@ module DialogBarrel {
     }
 
     class MenuItemExDrawable extends ListViewDrawable {
+        static var log = getLogger(:MenuItemExDrawable);
         const PADDING = 8;
+        static var titleCache = {}; 
+        static var subTextCache = {}; 
 
         function initialize(itemToString) {
+            log.debug("initialize");
             ListViewDrawable.initialize(itemToString);
         }
 
         function calculateHeight(dc) {
+            log.debug("calculateHeight");
             return drawOrCalc(dc, false);
         }
 
         function draw(dc) {
+            log.debug("draw");
             drawOrCalc(dc, true);
         }
 
         hidden function drawOrCalc(dc, doDraw) {
+            log.debug("drawOrCalc");
             var font = FONT_SIZE.medium();
             var color;
             var bgColor;
 
-            var lines = [];
+            // split title into lines
             var lineHeight = Gfx.getFontHeight(font);
+            var title;
             if (itemToString != null) {
-                splitText(itemToString.invoke(model)[0], font, dc, width, lines);
+                title = itemToString.invoke(model)[0];
             } else if (model instanceof String) {
-                splitText(model, font, dc, width, lines);
+                title = model;
             } else {
-                splitText(model[:text], font, dc, width, lines);
+                title = model[:text];
+            }
+            var lines = titleCache[title];
+            if (lines == null) {
+                lines = [];
+                splitText(title, font, dc, width, lines);
+                titleCache[title] = lines;
             }
 
+            // split subText into lines
             var subLines = [];
             var subLineHeight = Gfx.getFontHeight(font - 2);
+            var subText;
             if (itemToString != null) {
-                splitText(itemToString.invoke(model)[1], font - 2, dc, width, subLines);
+                subText = itemToString.invoke(model)[1];
             } else {
-                splitText(model[:subText], font, dc, width, lines);
+                subText = model[:subText];
             }
-
+            if (subText != null) {
+                subLines = subTextCache[subText];
+                if (subLines == null) {
+                    subLines = [];
+                    splitText(subText, font - 2, dc, width, subLines);
+                    subTextCache[subText] = subLines;
+                }
+            }
+ 
             height = lineHeight * lines.size() + subLineHeight * subLines.size() + 2 * PADDING;
 
             if (doDraw) {

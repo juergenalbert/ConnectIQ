@@ -66,6 +66,7 @@ module DialogBarrel {
     }
 
     function splitText(text, font, dc, width, lines) {
+        getLogger(:DialogBarrel).debug("splitText");
         if (text == null) {
             return;
         }
